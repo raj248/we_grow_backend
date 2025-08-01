@@ -1,0 +1,52 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "dist/src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec \"tsx src/server.ts\"",
+    "build": "tsc",
+    "start": "tsx src/server.ts",
+    "postinstall": "prisma generate",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.12.0",
+    "@types/express": "^5.0.3",
+    "cli-progress": "^3.12.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.4.0",
+    "fs-extra": "^11.3.0",
+    "multer": "^2.0.2",
+    "nanoid": "^5.1.5",
+    "node-cron": "^4.2.1",
+    "prisma": "^6.12.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.6",
+    "@types/cors": "^2.8.19",
+    "@types/fs-extra": "^11.0.4",
+    "@types/multer": "^2.0.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "description": ""
+}

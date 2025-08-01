@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PJ Classes Debug Panel</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      /* dark navy */
+      color: #f8fafc;
+      /* white */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #1e293b;
+      /* slate grey */
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #38bdf8;
+      /* sky blue */
+    }
+
+    p {
+      margin: 0.25rem 0;
+      color: #cbd5e1;
+      /* light grey */
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      background: #38bdf8;
+      /* sky blue */
+      color: #0f172a;
+      /* dark navy for contrast */
+      font-weight: bold;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: #38bdf8;
+      /* sky blue */
+      color: #0f172a;
+      /* dark navy text for contrast */
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+      /* lighter blue on hover */
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+
+
+</head>
+
+<body>
+  <div class="card">
+    <h1>🚀 PJ Classes Debug Panel</h1>
+    <p id="status">Loading server status...</p>
+    <button id="testNotify">📩 Send Test Notification</button>
+    <p id="notifyStatus"></p>
+    <button id="backBtn">🏠 Back to Dashboard</button>
+  </div>
+
+  <script>
+    document.getElementById('status').innerText = "Server Time: " + new Date().toLocaleString();
+
+    document.getElementById('testNotify').addEventListener('click', async () => {
+      const btn = document.getElementById('testNotify');
+      const status = document.getElementById('notifyStatus');
+      btn.disabled = true;
+      status.innerText = "Sending test notification...";
+      try {
+        const res = await fetch('/notifications/broadcast/test');
+        const json = await res.json();
+        if (json.success) {
+          status.innerText = "✅ Test notification sent!";
+        } else {
+          status.innerText = "❌ Failed to send notification.";
+        }
+      } catch (e) {
+        console.error(e);
+        status.innerText = "❌ Error sending notification.";
+      }
+      btn.disabled = false;
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      window.location.href = '/';
+    });
+  </script>
+</body>
+
+</html>
