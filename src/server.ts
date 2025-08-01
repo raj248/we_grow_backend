@@ -16,6 +16,8 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 import { logResponseBody } from "~/middleware/logResponseBody";
 import { loadCacheMeta } from './utils/cacheManager';
 import mainRoute from "~/routes/main.routes";
+import userRoute from "~/routes/user.routes";
+import notificationsRoute from "~/routes/notifications.routes";
 
 app.use(logResponseBody);
 
@@ -25,7 +27,9 @@ app.get("/status", (req, res) => res.json({
   port: process.env.PORT || 3000
 }));
 app.get("/logs", (req, res) => res.json(logger.logs));
+app.use("/notifications", notificationsRoute);
 app.use("/api/main", mainRoute)
+app.use("/api/user", userRoute)
 
 // Serve uploaded files statically if needed:
 app.use('/uploads', express.static('uploads'));

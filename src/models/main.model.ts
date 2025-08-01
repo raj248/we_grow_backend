@@ -6,7 +6,7 @@ import path from "path";
 export const mainModel = {
   async getAll() {
     try {
-      const items = await prisma.main.findMany();
+      const items = "await prisma.main.findMany()";
       return { success: true, data: items };
 
     } catch (error) {
