@@ -3,18 +3,18 @@ import { UserModel } from '~/models/user.model';
 import { logger } from '~/utils/log';
 
 export const UserController = {
-  async registerGuest(req: Request, res: Response): Promise<void> {
-    const { guestId, fcmToken } = req.body;
+  async registerUser(req: Request, res: Response): Promise<void> {
+    const { userId, fcmToken } = req.body;
 
-    if (!guestId || guestId.length !== 8) {
-      res.status(400).json({ success: false, error: 'Invalid or missing guestId' });
+    if (!userId || userId.length !== 8) {
+      res.status(400).json({ success: false, error: 'Invalid or missing userId' });
       return;
     }
 
-    const result = await UserModel.upsertGuest(guestId, fcmToken);
+    const result = await UserModel.upsertUser(userId, fcmToken);
 
     if (!result.success) {
-      logger.error(`UserController.registerGuest: ${result.error}`);
+      logger.error(`UserController.registerUser: ${result.error}`);
       res.status(500).json(result);
       return;
     }
@@ -25,6 +25,11 @@ export const UserController = {
   async updateFcmToken(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const { fcmToken } = req.body;
+
+    if (!id) {
+      res.status(400).json({ success: false, error: 'Missing User ID' });
+      return;
+    }
 
     if (!fcmToken || typeof fcmToken !== 'string') {
       res.status(400).json({ success: false, error: 'Missing or invalid fcmToken' });
@@ -40,5 +45,33 @@ export const UserController = {
     }
 
     res.json(result);
-  }
+  },
+
+  async updateLastActive(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+
+    if (!id || typeof id !== 'string') {
+      res.status(400).json({ success: false, error: 'Missing or invalid userId' });
+      return;
+    }
+
+    const result = await UserModel.updateLastActive(id);
+
+    if (!result.success) {
+      logger.error(`UserController.updateLastActive: ${result.error}`);
+      res.status(500).json(result);
+      return;
+    }
+
+    res.json(result);
+  },
+  async getActiveUsersLast24Hrs(req: Request, res: Response) {
+    try {
+      const result = await UserModel.getActiveLast24Hours();
+      res.json(result);
+    } catch (error) {
+      console.error("Error getting active users:", error);
+      res.status(500).json({ success: false, error: "Internal server error" });
+    }
+  },
 };
