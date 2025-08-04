@@ -4,12 +4,13 @@ import winston from "winston";
 import DailyRotateFile from 'winston-daily-rotate-file';
 import util from "util";
 import path from "path";
+import { format } from "date-fns";
 
 type LogLevel = "LOG" | "INFO" | "WARN" | "ERROR";
 const logs: string[] = [];
 
 function formatLog(level: LogLevel, message: string): string {
-  return `[${new Date().toISOString()}] [${level}] ${message}`;
+  return `[${format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss')}] [${level}] ${message}`;
 }
 
 function prettyFormat(message: any): string {
@@ -82,25 +83,25 @@ const winstonLogger = winston.createLogger({
 
 // Logging functions
 function log(message: any): void {
-  const entry = formatLog("LOG", String(message));
+  const entry = formatLog("LOG", prettyFormat(message));
   pushLog(entry);
   winstonLogger.info(prettyFormat(message));
 }
 
 function info(message: any): void {
-  const entry = formatLog("INFO", String(message));
+  const entry = formatLog("INFO", prettyFormat(message));
   pushLog(entry);
   winstonLogger.info(prettyFormat(message));
 }
 
 function warn(message: any): void {
-  const entry = formatLog("WARN", String(message));
+  const entry = formatLog("WARN", prettyFormat(message));
   pushLog(entry);
   winstonLogger.warn(prettyFormat(message));
 }
 
 function error(message: any): void {
-  const entry = formatLog("ERROR", String(message));
+  const entry = formatLog("ERROR", prettyFormat(message));
   pushLog(entry);
   winstonLogger.error(prettyFormat(message));
 }

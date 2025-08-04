@@ -4,6 +4,11 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { logger } from "~/utils/log";
+import AnsiToHtml from 'ansi-to-html';
+
+const ansiToHtml = new AnsiToHtml();
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -18,15 +23,28 @@ import { loadCacheMeta } from './utils/cacheManager';
 import mainRoute from "~/routes/main.routes";
 import userRoute from "~/routes/user.routes";
 import notificationsRoute from "~/routes/notifications.routes";
+import { format } from 'date-fns';
 
 app.use(logResponseBody);
+
+app.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss'),
+    uptime: process.uptime() // in seconds
+  });
+});
 
 app.get("/status", (req, res) => res.json({
   time: new Date().toLocaleString(),
   env: process.env.NODE_ENV || "development",
   port: process.env.PORT || 3000
 }));
-app.get("/logs", (req, res) => res.json(logger.logs));
+app.get("/logs", (req, res) => {
+  const coloredHtmlLines = logger.logs.map(line => ansiToHtml.toHtml(line));
+  res.json(coloredHtmlLines);
+});
+
 app.use("/notifications", notificationsRoute);
 app.use("/api/main", mainRoute)
 app.use("/api/user", userRoute)

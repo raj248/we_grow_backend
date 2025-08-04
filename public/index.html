@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: system-ui, sans-serif;
-      background: #0f172a;
+      background: #10131a;
       /* dark navy */
       color: #f8fafc;
       /* white */
@@ -34,7 +34,7 @@
 
     h1 {
       font-size: 1.5rem;
-      color: #38bdf8;
+      color: #f86e38;
       /* sky blue */
       margin-bottom: 0.5rem;
     }
@@ -51,7 +51,7 @@
       padding: 0.5rem 1rem;
       border: none;
       border-radius: 0.5rem;
-      background: #38bdf8;
+      background: #95f838;
       /* sky blue */
       color: #0f172a;
       /* dark navy */
@@ -62,12 +62,12 @@
     }
 
     button:hover {
-      background: #0ea5e9;
+      background: #e9a40e;
       /* lighter blue hover */
     }
 
     .badge {
-      background: #38bdf8;
+      background: #f87538;
       /* sky blue */
       color: #0f172a;
       /* dark navy */
@@ -77,6 +77,18 @@
       font-size: 0.75rem;
       margin-left: 0.3rem;
     }
+
+    pre#logs {
+      white-space: pre-wrap;
+      /* Wrap long lines */
+      word-wrap: break-word;
+      /* Break long words */
+      overflow-wrap: break-word;
+      max-height: 400px;
+      /* Optional: limit height */
+      overflow-y: auto;
+      /* Scroll if overflow */
+    }
   </style>
 
 
@@ -84,7 +96,7 @@
 
 <body>
   <div class="card">
-    <h1>🚀 PJ Classes Server Dashboard</h1>
+    <h1>🚀 We Grow Server Dashboard</h1>
     <p id="serverTime">Loading server time...</p>
     <p>Environment: <span class="badge" id="env">loading...</span></p>
     <p>Port: <span class="badge" id="port">loading...</span></p>
@@ -112,12 +124,13 @@
 
     async function loadLogs() {
       try {
-        const res = await fetch('../logs');
+        const res = await fetch('./logs');
         const json = await res.json();
-        document.getElementById('logs').innerText = json.logs.join("\n");
+        console.log(json)
+        document.getElementById('logs').innerHTML = json.join("<br>");
       } catch (e) {
         console.error(e);
-        document.getElementById('logs').innerText = "Failed to load logs.";
+        document.getElementById('logs').innerHTML = "Failed to load logs.";
       }
     }
 
