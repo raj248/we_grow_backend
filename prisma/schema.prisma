@@ -10,10 +10,61 @@ datasource db {
 model User {
   id           String   @id @default(cuid())
   userId       String   @unique
-  fcmToken     String?  // Optional, since FCM can be updated later
+  fcmToken     String?
   lastActiveAt DateTime @default(now())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
+
+  wallet       Wallet?
+  transactions Transaction[]
+
   @@index([lastActiveAt])
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Int      @default(0) // in coins
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id             String   @id @default(cuid())
+  userId         String
+  type           TransactionType
+  amount         Int // in coins
+  source         String // e.g. 'purchase', 'reward', 'admin', etc.
+  transactionId  String? // Google Play or Razorpay transaction ID
+  status         TransactionStatus @default(PENDING)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([transactionId])
+}
+
+model PurchaseOption {
+  id            String   @id @default(cuid())
+  coins         Int
+  priceInINR    Int // Stored in paisa for precision (optional)
+  googleProductId String @unique
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionStatus {
+  SUCCESS
+  PENDING
+  FAILED
 }
