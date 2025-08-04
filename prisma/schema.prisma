@@ -48,15 +48,6 @@ model Transaction {
   @@index([transactionId])
 }
 
-model PurchaseOption {
-  id            String   @id @default(cuid())
-  coins         Int
-  googleProductId String @unique
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
 enum TransactionType {
   CREDIT
   DEBIT
@@ -66,4 +57,13 @@ enum TransactionStatus {
   SUCCESS
   PENDING
   FAILED
+}
+
+model PurchaseOption {
+  id            String   @id @default(cuid())
+  coins         Int
+  googleProductId String @unique
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

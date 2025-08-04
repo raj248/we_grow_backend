@@ -29,6 +29,7 @@ import userRoute from "~/routes/user.routes";
 import notificationsRoute from "~/routes/notifications.routes";
 import purchaseOptionRoute from "~/routes/purchase-option.routes";
 import walletRoute from "~/routes/wallet.route";
+import transactionRoute from "~/routes/transaction.route"
 import { format } from 'date-fns';
 
 app.use(logResponseBody);
@@ -52,10 +53,11 @@ app.get("/logs", (req, res) => {
 });
 
 app.use("/notifications", notificationsRoute);
-app.use("/api/main", mainRoute)
-app.use("/api/user", userRoute)
+app.use("/api/main", mainRoute);
+app.use("/api/user", userRoute);
 app.use("/api/purchase-options", purchaseOptionRoute)
 app.use('/api/wallet', walletRoute);
+app.use('/api/transactions', transactionRoute);
 
 // Serve uploaded files statically if needed:
 app.use('/uploads', express.static('uploads'));
