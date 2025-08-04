@@ -40,11 +40,12 @@ export const UserController = {
 
     if (!result.success) {
       logger.error(`UserController.updateFcmToken: ${result.error}`);
-      res.status(500).json(result);
+      res.status(500).json({ success: false, error: result.error });
       return;
     }
 
-    res.json(result);
+    logger.info(`UserController.updateFcmToken: ${result.error}`);
+    res.status(200).json({ success: true, message: result.error });
   },
 
   async updateLastActive(req: Request, res: Response): Promise<void> {

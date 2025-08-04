@@ -12,7 +12,11 @@ const ansiToHtml = new AnsiToHtml();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost', 'https://localhost'], // or your frontend IP/domain
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // Serve public folder for debug

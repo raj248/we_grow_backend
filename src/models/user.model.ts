@@ -19,16 +19,30 @@ export const UserModel = {
     }
   },
 
-  async updateFcmToken(id: string, fcmToken: string) {
+  async updateFcmToken(userId: string, fcmToken: string) {
     try {
-      const updated = await prisma.user.update({
-        where: { userId: id },
-        data: { fcmToken },
-      });
-      return { success: true };
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+
+      if (user) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { fcmToken },
+        });
+
+        return { success: true, message: "FCM token updated successfully." };
+      } else {
+        await prisma.user.create({
+          data: {
+            userId: userId,
+            fcmToken,
+            // optionally add other default fields
+          },
+        });
+
+        return { success: true, message: "User not found. New user created and FCM token registered." };
+      }
     } catch (error) {
-      logger.error(error);
-      return { success: false, error: 'Failed to update FCM token.' };
+      return { success: false, error: `Database error: ${error}` };
     }
   },
 
