@@ -21,11 +21,11 @@ export const UserModel = {
 
   async updateFcmToken(userId: string, fcmToken: string) {
     try {
-      const user = await prisma.user.findUnique({ where: { id: userId } });
+      const user = await prisma.user.findUnique({ where: { userId: userId } });
 
       if (user) {
         await prisma.user.update({
-          where: { id: userId },
+          where: { userId: userId },
           data: { fcmToken },
         });
 
