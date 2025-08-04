@@ -10,8 +10,26 @@ export const UserModel = {
       const user = await prisma.user.upsert({
         where: { userId },
         update: { fcmToken },
-        create: { userId, fcmToken },
+        create: {
+          userId,
+          fcmToken,
+          wallet: {
+            create: {
+              balance: 50, // initial balance
+            },
+          },
+          transactions: {
+            create: {
+              type: 'CREDIT',
+              amount: 50,
+              source: 'initial',
+              status: 'SUCCESS',
+            },
+          },
+        },
+        include: { wallet: true },
       });
+
       return { success: true, data: user };
     } catch (error) {
       logger.error(error);
@@ -24,22 +42,15 @@ export const UserModel = {
       const user = await prisma.user.findUnique({ where: { userId: userId } });
 
       if (user) {
-        await prisma.user.update({
+        const updatedUser = await prisma.user.update({
           where: { userId: userId },
           data: { fcmToken },
         });
 
-        return { success: true, message: "FCM token updated successfully." };
+        return { success: true, data: updatedUser, message: "FCM token updated successfully." };
       } else {
-        await prisma.user.create({
-          data: {
-            userId: userId,
-            fcmToken,
-            // optionally add other default fields
-          },
-        });
-
-        return { success: true, message: "User not found. New user created and FCM token registered." };
+        const newUser = await this.upsertUser(userId, fcmToken);
+        return { success: true, data: newUser, message: "User not found. New user created and FCM token registered." };
       }
     } catch (error) {
       return { success: false, error: `Database error: ${error}` };

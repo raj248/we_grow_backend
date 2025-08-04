@@ -28,6 +28,7 @@ import mainRoute from "~/routes/main.routes";
 import userRoute from "~/routes/user.routes";
 import notificationsRoute from "~/routes/notifications.routes";
 import purchaseOptionRoute from "~/routes/purchase-option.routes";
+import walletRoute from "~/routes/wallet.route";
 import { format } from 'date-fns';
 
 app.use(logResponseBody);
@@ -54,6 +55,7 @@ app.use("/notifications", notificationsRoute);
 app.use("/api/main", mainRoute)
 app.use("/api/user", userRoute)
 app.use("/api/purchase-options", purchaseOptionRoute)
+app.use('/api/wallet', walletRoute);
 
 // Serve uploaded files statically if needed:
 app.use('/uploads', express.static('uploads'));
