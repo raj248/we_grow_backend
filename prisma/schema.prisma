@@ -51,7 +51,6 @@ model Transaction {
 model PurchaseOption {
   id            String   @id @default(cuid())
   coins         Int
-  priceInINR    Int // Stored in paisa for precision (optional)
   googleProductId String @unique
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())

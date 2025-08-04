@@ -1,6 +1,7 @@
 // ~/utils/cacheKeys.ts
 export const cacheKeys = {
-  courseList: () => 'course:all:list',
+  purchaseOptionList: () => 'purchaseOption:all:list',
+  purchaseOptionInfo: (id: string) => `purchaseOption:${id}:info`,
   // courseByType: (type: string) => `course:type:${type}`,
   courseInfo: (id: string) => `course:${id}:info`,
   // courseStats: (id: string) => `course:${id}:withStats`,

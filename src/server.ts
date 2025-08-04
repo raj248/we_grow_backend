@@ -27,6 +27,7 @@ import { loadCacheMeta } from './utils/cacheManager';
 import mainRoute from "~/routes/main.routes";
 import userRoute from "~/routes/user.routes";
 import notificationsRoute from "~/routes/notifications.routes";
+import purchaseOptionRoute from "~/routes/purchase-option.routes";
 import { format } from 'date-fns';
 
 app.use(logResponseBody);
@@ -52,6 +53,7 @@ app.get("/logs", (req, res) => {
 app.use("/notifications", notificationsRoute);
 app.use("/api/main", mainRoute)
 app.use("/api/user", userRoute)
+app.use("/api/purchase-options", purchaseOptionRoute)
 
 // Serve uploaded files statically if needed:
 app.use('/uploads', express.static('uploads'));

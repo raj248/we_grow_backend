@@ -34,7 +34,6 @@ async function main() {
       update: {},
       create: {
         coins: option.coins,
-        priceInINR: option.priceInINR,
         googleProductId: option.googleProductId,
       },
     });
