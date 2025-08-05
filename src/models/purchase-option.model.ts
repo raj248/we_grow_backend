@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { logger } from '~/utils/log';
-
 const prisma = new PrismaClient();
+
+import { logger } from '~/utils/log';
 
 export const PurchaseOptionModel = {
   async create(data: { coins: number; googleProductId: string }) {
