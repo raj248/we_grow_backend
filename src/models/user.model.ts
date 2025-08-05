@@ -22,6 +22,7 @@ export const UserModel = {
             create: {
               type: 'CREDIT',
               amount: 50,
+              transactionId: `initial_${userId}`,
               source: 'initial',
               status: 'SUCCESS',
             },
