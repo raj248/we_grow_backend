@@ -41,7 +41,7 @@ export const purchaseCoins = async (req: Request, res: Response) => {
           userId,
           amount: option.coins,
           type: "CREDIT",
-          source: "purchase",
+          source: "Debug Purchase",
           status: "SUCCESS",
           transactionId: fakeOrderId,
         },

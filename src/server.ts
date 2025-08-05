@@ -29,7 +29,7 @@ import userRoute from "~/routes/user.routes";
 import notificationsRoute from "~/routes/notifications.routes";
 import purchaseOptionRoute from "~/routes/purchase-option.routes";
 import walletRoute from "~/routes/wallet.route";
-import transactionRoute from "~/routes/transaction.route"
+import transactionRoute from "~/routes/transaction.routes"
 import { format } from 'date-fns';
 
 app.use(logResponseBody);
