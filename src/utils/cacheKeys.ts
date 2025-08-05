@@ -3,7 +3,7 @@ export const cacheKeys = {
   purchaseOptionList: () => 'purchaseOption:all:list',
   purchaseOptionInfo: (id: string) => `purchaseOption:${id}:info`,
   // courseByType: (type: string) => `course:type:${type}`,
-  courseInfo: (id: string) => `course:${id}:info`,
+  transactionInfo: (id: string) => `transaction:${id}:info`,
   // courseStats: (id: string) => `course:${id}:withStats`,
 
   topicByCourseType: (type: string) => `topic:courseType:${type}`,

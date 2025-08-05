@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 import { Request, Response } from "express";
+import { cacheKeys } from '~/utils/cacheKeys';
+import { setLastUpdated } from '~/utils/cacheManager';
 
 export const purchaseCoins = async (req: Request, res: Response) => {
   try {
@@ -51,7 +53,7 @@ export const purchaseCoins = async (req: Request, res: Response) => {
         },
       }),
     ]);
-
+    setLastUpdated(cacheKeys.transactionInfo(userId))
     return res.status(200).json({
       success: true,
       message: "Purchase successful",
