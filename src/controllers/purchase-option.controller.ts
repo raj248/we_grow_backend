@@ -1,8 +1,8 @@
-import { PurchaseOptionModel } from '~/models/purchase-option.model';
-import { logger } from '~/utils/log';
+import { PurchaseOptionModel } from '../models/purchase-option.model.js';
+import { logger } from '../utils/log.js';
 import type { Request, Response } from 'express';
-import { setLastUpdated } from '~/utils/cacheManager';
-import { cacheKeys } from '~/utils/cacheKeys';
+import { setLastUpdated } from '../utils/cacheManager.js';
+import { cacheKeys } from '../utils/cacheKeys.js';
 
 export const PurchaseOptionController = {
   async create(req: Request, res: Response) {

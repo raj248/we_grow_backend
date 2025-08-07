@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { WalletModel } from '~/models/wallet.model';
+import { WalletModel } from '../models/wallet.model.js';
 
 export const WalletController = {
   async getWallet(req: Request, res: Response) {

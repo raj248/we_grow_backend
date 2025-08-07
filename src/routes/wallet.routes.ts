@@ -1,6 +1,6 @@
 import express from 'express';
-import { purchaseCoins } from '~/controllers/purchase-coin.controller';
-import { WalletController } from '~/controllers/wallet.controller';
+import { purchaseCoins } from '../controllers/purchase-coin.controller.js';
+import { WalletController } from '../controllers/wallet.controller.js';
 
 const router = express.Router();
 

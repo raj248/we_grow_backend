@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 import { Request, Response } from "express";
-import { cacheKeys } from '~/utils/cacheKeys';
-import { setLastUpdated } from '~/utils/cacheManager';
+import { cacheKeys } from '../utils/cacheKeys.js';
+import { setLastUpdated } from '../utils/cacheManager.js';
 
 export const purchaseCoins = async (req: Request, res: Response) => {
   try {

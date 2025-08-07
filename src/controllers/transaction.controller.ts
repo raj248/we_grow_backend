@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as TransactionModel from "~/models/transaction.model";
+import * as TransactionModel from "../models/transaction.model.js";
 import { TransactionStatus, TransactionType } from "@prisma/client";
 
 export const getUserTransactions = async (req: Request, res: Response) => {

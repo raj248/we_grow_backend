@@ -3,7 +3,7 @@ import 'dotenv/config';
 import express from "express";
 import cors from "cors";
 import path from "path";
-import { logger } from "~/utils/log";
+import { logger } from "./utils/log.js";
 import AnsiToHtml from 'ansi-to-html';
 
 const ansiToHtml = new AnsiToHtml();
@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: ['http://localhost', 'https://localhost'], // or your frontend IP/domain
+  origin: true, // or your frontend IP/domain
   credentials: true,
 }));
 
@@ -22,14 +22,14 @@ app.use(express.json());
 // Serve public folder for debug
 app.use(express.static(path.join(process.cwd(), 'public')));
 
-import { logResponseBody } from "~/middleware/logResponseBody";
-import { loadCacheMeta } from './utils/cacheManager';
-import mainRoute from "~/routes/main.routes";
-import userRoute from "~/routes/user.routes";
-import notificationsRoute from "~/routes/notifications.routes";
-import purchaseOptionRoute from "~/routes/purchase-option.routes";
-import walletRoute from "~/routes/wallet.route";
-import transactionRoute from "~/routes/transaction.routes"
+import { logResponseBody } from "./middleware/logResponseBody.js";
+import { loadCacheMeta } from './utils/cacheManager.js';
+import mainRoute from "./routes/main.routes.js";
+import userRoute from "./routes/user.routes.js";
+import notificationsRoute from "./routes/notifications.routes.js";
+import purchaseOptionRoute from "./routes/purchase-option.routes.js";
+import walletRoute from "./routes/wallet.routes.js";
+import transactionRoute from "./routes/transaction.routes.js"
 import { format } from 'date-fns';
 
 app.use(logResponseBody);
@@ -73,7 +73,15 @@ app.use((req, res) => {
   });
 });
 
-// await loadCacheMeta(); // before app.listen()
-app.listen({ port: PORT, host: '0.0.0.0' }, () => {
-  logger.log(`Server running at http://0.0.0.0:${PORT}`);
+await loadCacheMeta(); // before app.listen()
+// app.listen({ port: PORT, host: '0.0.0.0' }, () => {
+//   logger.log(`Server running at http://0.0.0.0:${PORT}`);
+// });
+
+import http from "http"
+
+const server = http.createServer(app);
+
+server.listen(PORT, () => {
+  logger.log(`Server running on port ${PORT}`);
 });

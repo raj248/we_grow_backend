@@ -1,7 +1,7 @@
 import express from "express";
-import * as TransactionController from "~/controllers/transaction.controller";
-import { cacheMiddleware } from "~/middleware/cacheMiddleware";
-import { cacheKeys } from "~/utils/cacheKeys";
+import * as TransactionController from "../controllers/transaction.controller.js";
+import { cacheMiddleware } from "../middleware/cacheMiddleware.js";
+import { cacheKeys } from "../utils/cacheKeys.js";
 
 const router = express.Router();
 

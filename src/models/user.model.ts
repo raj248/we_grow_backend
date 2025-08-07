@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { logger } from '~/utils/log';
+import { logger } from '../utils/log.js';
 import { subHours } from 'date-fns';
 
 const prisma = new PrismaClient();

@@ -1,7 +1,7 @@
 // src/controllers/notificationController.ts
 import { Request, Response } from "express";
 import admin from "firebase-admin";
-import { sendNotification } from "~/utils/notificationUtil";
+import { sendNotification } from "../utils/notificationUtil.js";
 
 export async function broadcastNotification(req: Request, res: Response) {
   const { title, body, data } = req.body as {

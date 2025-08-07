@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { getLastUpdated, setLastUpdated } from "~/utils/cacheManager";
-import { logger } from "~/utils/log";
+import { getLastUpdated, setLastUpdated } from "../utils/cacheManager.js";
+import { logger } from "../utils/log.js";
 
 const cacheStore: Map<string, { data: any; fetchedAt: number }> = new Map();
 

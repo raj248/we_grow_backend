@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { mainModel } from "~/models/main.model";
-import { logger } from "~/utils/log";
+import { mainModel } from "../models/main.model.js";
+import { logger } from "../utils/log.js";
 
 export const mainController = {
   async list(req: Request, res: Response) {

@@ -64,9 +64,9 @@ function scheduleCleanupJob(job: ScheduledJob) {
 
   const task = cron.schedule(job.cronExpression, async () => {
     try {
-      const result = await prisma.newlyAdded.deleteMany({
+      const result = await prisma.user.deleteMany({
         where: {
-          expiresAt: {
+          lastActiveAt: {
             lte: new Date(),
           },
         },

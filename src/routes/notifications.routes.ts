@@ -3,7 +3,7 @@ import express from "express";
 import {
   broadcastNotification,
   broadcastTestNotification,
-} from "~/controllers/notification.controller";
+} from "../controllers/notification.controller.js";
 
 const router = express.Router();
 

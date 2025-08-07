@@ -1,7 +1,7 @@
 import express from 'express';
-import { PurchaseOptionController } from '~/controllers/purchase-option.controller';
-import { cacheMiddleware } from '~/middleware/cacheMiddleware';
-import { cacheKeys } from '~/utils/cacheKeys';
+import { PurchaseOptionController } from '../controllers/purchase-option.controller.js';
+import { cacheMiddleware } from '../middleware/cacheMiddleware.js';
+import { cacheKeys } from '../utils/cacheKeys.js';
 
 const router = express.Router();
 

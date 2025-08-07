@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { UserModel } from '~/models/user.model';
-import { logger } from '~/utils/log';
+import { UserModel } from '../models/user.model.js';
+import { logger } from '../utils/log.js';
 
 export const UserController = {
   async registerUser(req: Request, res: Response): Promise<void> {
