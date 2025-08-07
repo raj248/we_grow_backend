@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import { cacheKeys } from '../utils/cacheKeys.js';
 import { setLastUpdated } from '../utils/cacheManager.js';
 
-export const purchaseCoins = async (req: Request, res: Response) => {
+export const topupCoins = async (req: Request, res: Response) => {
   try {
     const { userId, purchaseToken, productId } = req.body;
 
@@ -15,7 +15,7 @@ export const purchaseCoins = async (req: Request, res: Response) => {
     }
 
     // Check purchase option
-    const option = await prisma.purchaseOption.findUnique({
+    const option = await prisma.topupOptions.findUnique({
       where: { googleProductId: productId },
     });
 
@@ -61,7 +61,7 @@ export const purchaseCoins = async (req: Request, res: Response) => {
       wallet,
     });
   } catch (err) {
-    console.error("[purchaseCoins]", err);
+    console.error("[topupCoins]", err);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
