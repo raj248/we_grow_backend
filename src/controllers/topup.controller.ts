@@ -10,7 +10,7 @@ export const TopupController = {
     const result = await TopupModel.create({ coins, googleProductId });
 
     if (result.success) {
-      setLastUpdated(cacheKeys.purchaseOptionList())
+      setLastUpdated(cacheKeys.TopupOptionList())
       return res.status(201).json(result);
     } else {
       logger.error(result.error);
@@ -52,7 +52,7 @@ export const TopupController = {
     });
 
     if (result.success) {
-      setLastUpdated(cacheKeys.purchaseOptionList())
+      setLastUpdated(cacheKeys.TopupOptionList())
       if (result.data && result.data.id) setLastUpdated(cacheKeys.purchaseOptionInfo(result.data.id))
       return res.status(200).json(result);
     } else {
@@ -66,7 +66,7 @@ export const TopupController = {
     const result = await TopupModel.deleteById(id);
 
     if (result.success) {
-      setLastUpdated(cacheKeys.purchaseOptionList())
+      setLastUpdated(cacheKeys.TopupOptionList())
       if (result.data && result.data.id) setLastUpdated(cacheKeys.purchaseOptionInfo(result.data.id))
       return res.status(200).json({ message: 'Deleted successfully.' });
     } else {

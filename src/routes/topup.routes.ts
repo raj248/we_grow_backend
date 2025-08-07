@@ -6,7 +6,7 @@ import { cacheKeys } from '../utils/cacheKeys.js';
 const router = express.Router();
 
 // GET /api/purchase-options - get all purchase options
-router.get('/', cacheMiddleware(() => cacheKeys.purchaseOptionList()), TopupController.getAll);
+router.get('/', cacheMiddleware(() => cacheKeys.TopupOptionList()), TopupController.getAll);
 
 // GET /api/purchase-options/:id - get a specific purchase option by ID
 router.get('/:id', cacheMiddleware((req) => cacheKeys.purchaseOptionInfo(req.params.id)), TopupController.getById);

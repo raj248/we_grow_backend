@@ -27,7 +27,7 @@ import { loadCacheMeta } from './utils/cacheManager.js';
 import mainRoute from "./routes/main.routes.js";
 import userRoute from "./routes/user.routes.js";
 import notificationsRoute from "./routes/notifications.routes.js";
-import purchaseOptionRoute from "./routes/purchase-option.routes.js";
+import TopupRoute from "./routes/topup.routes.js";
 import walletRoute from "./routes/wallet.routes.js";
 import transactionRoute from "./routes/transaction.routes.js"
 import { format } from 'date-fns';
@@ -55,7 +55,7 @@ app.get("/logs", (req, res) => {
 app.use("/notifications", notificationsRoute);
 app.use("/api/main", mainRoute);
 app.use("/api/user", userRoute);
-app.use("/api/purchase-options", purchaseOptionRoute)
+app.use("/api/purchase-options", TopupRoute)
 app.use('/api/wallet', walletRoute);
 app.use('/api/transactions', transactionRoute);
 

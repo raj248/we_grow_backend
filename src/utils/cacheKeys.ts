@@ -1,6 +1,6 @@
 // ~/utils/cacheKeys.ts
 export const cacheKeys = {
-  purchaseOptionList: () => 'purchaseOption:all:list',
+  TopupOptionList: () => 'purchaseOption:all:list',
   purchaseOptionInfo: (id: string) => `purchaseOption:${id}:info`,
   // courseByType: (type: string) => `course:type:${type}`,
   transactionInfo: (id: string) => `transaction:${id}:info`,
