@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get('/:userId', WalletController.getWallet);
 router.patch('/:userId', WalletController.updateWalletBalance);
-router.post("/purchase", purchaseCoins);
+router.post("/topup", purchaseCoins);
 
 export default router;
