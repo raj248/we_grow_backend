@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 import { logger } from '../utils/log.js';
 
-export const PurchaseOptionModel = {
+export const TopupModel = {
   async create(data: { coins: number; googleProductId: string }) {
     try {
       const option = await prisma.purchaseOption.create({
