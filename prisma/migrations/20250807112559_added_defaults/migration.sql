@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "BoostPlan" ALTER COLUMN "views" SET DEFAULT 0,
+ALTER COLUMN "likes" SET DEFAULT 0;

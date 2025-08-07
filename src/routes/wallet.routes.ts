@@ -1,5 +1,5 @@
 import express from 'express';
-import { topupCoins } from '../controllers/purchase-coin.controller.js';
+import { topupCoins } from '../controllers/topup-coin.controller.js';
 import { WalletController } from '../controllers/wallet.controller.js';
 
 const router = express.Router();

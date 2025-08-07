@@ -4,6 +4,7 @@ export const cacheKeys = {
   purchaseOptionInfo: (id: string) => `purchaseOption:${id}:info`,
   // courseByType: (type: string) => `course:type:${type}`,
   transactionInfo: (id: string) => `transaction:${id}:info`,
+  wallet: (id: string) => `wallet:${id}:info`,
   // courseStats: (id: string) => `course:${id}:withStats`,
 
   topicByCourseType: (type: string) => `topic:courseType:${type}`,

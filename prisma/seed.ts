@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-
+import { seedBoostPlans } from "./seed-data.js"
 const prisma = new PrismaClient();
 
 async function main() {
@@ -39,6 +39,7 @@ async function main() {
     });
   }
 
+  await seedBoostPlans();
   console.log("✅ Seeding complete!");
 }
 
