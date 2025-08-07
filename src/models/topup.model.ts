@@ -6,7 +6,7 @@ import { logger } from '../utils/log.js';
 export const TopupModel = {
   async create(data: { coins: number; googleProductId: string }) {
     try {
-      const option = await prisma.purchaseOption.create({
+      const option = await prisma.topupOptions.create({
         data,
       });
       return { success: true, data: option };
@@ -18,7 +18,7 @@ export const TopupModel = {
 
   async getAll(activeOnly = true) {
     try {
-      const options = await prisma.purchaseOption.findMany({
+      const options = await prisma.topupOptions.findMany({
         where: activeOnly ? { isActive: true } : {},
         orderBy: { coins: 'asc' },
       });
@@ -31,7 +31,7 @@ export const TopupModel = {
 
   async getById(id: string) {
     try {
-      const option = await prisma.purchaseOption.findUnique({
+      const option = await prisma.topupOptions.findUnique({
         where: { id },
       });
       return option
@@ -48,7 +48,7 @@ export const TopupModel = {
     data: Partial<{ coins: number; googleProductId: string; isActive: boolean }>
   ) {
     try {
-      const updated = await prisma.purchaseOption.update({
+      const updated = await prisma.topupOptions.update({
         where: { id },
         data,
       });
@@ -61,7 +61,7 @@ export const TopupModel = {
 
   async deleteById(id: string) {
     try {
-      const deleted = await prisma.purchaseOption.delete({
+      const deleted = await prisma.topupOptions.delete({
         where: { id },
       });
       return { success: true, data: deleted };

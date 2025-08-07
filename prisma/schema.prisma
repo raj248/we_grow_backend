@@ -59,7 +59,7 @@ enum TransactionStatus {
   FAILED
 }
 
-model PurchaseOption {
+model TopupOptions {
   id            String   @id @default(cuid())
   coins         Int
   googleProductId String @unique

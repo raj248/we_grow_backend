@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding database...");
 
-  const purchaseOptions = [
+  const TopupOptions = [
     {
       coins: 100,
       priceInINR: 5000, // ₹50.00 in paisa
@@ -28,8 +28,8 @@ async function main() {
     },
   ];
 
-  for (const option of purchaseOptions) {
-    await prisma.purchaseOption.upsert({
+  for (const option of TopupOptions) {
+    await prisma.topupOptions.upsert({
       where: { googleProductId: option.googleProductId },
       update: {},
       create: {

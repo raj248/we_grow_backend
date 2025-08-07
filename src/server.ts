@@ -55,7 +55,7 @@ app.get("/logs", (req, res) => {
 app.use("/notifications", notificationsRoute);
 app.use("/api/main", mainRoute);
 app.use("/api/user", userRoute);
-app.use("/api/purchase-options", TopupRoute)
+app.use("/api/topup-options", TopupRoute)
 app.use('/api/wallet', walletRoute);
 app.use('/api/transactions', transactionRoute);
 
