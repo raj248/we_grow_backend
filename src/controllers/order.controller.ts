@@ -39,7 +39,7 @@ export const orderController = {
         return res.status(404).json({ message: "No unwatched videos available" });
       }
 
-      res.json(order);
+      res.json({ success: true, data: order });
     } catch (error) {
       console.error("Error getting random video:", error);
       res.status(500).json({ message: "Internal server error" });
