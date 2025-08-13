@@ -37,4 +37,32 @@ export const orderModel = {
       }),
     ]);
   },
+  /**
+   * Get a random order not watched by the user and not created by the user
+   */
+  async getUniqueUnwatchedOrder(userId: string) {
+    const order = await prisma.order.findFirst({
+      where: {
+        userId: { not: userId }, // not placed by same user
+        watchHistory: {
+          none: {
+            userId: userId, // not yet watched by this user
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "asc", // newest first (change if you want random)
+      },
+      // include: {
+      //   boostPlan: true,
+      //   user: {
+      //     select: {
+      //       userId: true,
+      //     },
+      //   },
+      // },
+    });
+    return order;
+  },
+
 };
