@@ -1,88 +1,130 @@
 import { PrismaClient, PlanType } from "@prisma/client";
-
 const prisma = new PrismaClient();
 
-// 🔹 Get all boost plans
-export async function getAllBoostPlans() {
-  return prisma.boostPlan.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-}
+export const boostPlanModel = {
+  async getAll() {
+    try {
+      const items = await prisma.boostPlan.findMany({
+        orderBy: { createdAt: "desc" },
+      });
+      return { success: true, data: items };
+    } catch (error) {
+      console.error("[boostPlanModel.getAll]", error);
+      return { success: false, error: "Failed to fetch boost plans." };
+    }
+  },
 
-// 🔹 Get a boost plan by ID
-export async function getBoostPlanById(id: string) {
-  return prisma.boostPlan.findUnique({
-    where: { id },
-  });
-}
+  async getById(id: string) {
+    try {
+      const item = await prisma.boostPlan.findUnique({ where: { id } });
+      return { success: true, data: item };
+    } catch (error) {
+      console.error("[boostPlanModel.getById]", error);
+      return { success: false, error: "Failed to fetch boost plan." };
+    }
+  },
 
-// 🔹 Get all boost plans by type
-export async function getBoostPlansByType(type: PlanType) {
-  return prisma.boostPlan.findMany({
-    where: { type },
-    orderBy: { createdAt: "desc" },
-  });
-}
+  async getByType(type: PlanType) {
+    try {
+      const items = await prisma.boostPlan.findMany({
+        where: { type },
+        orderBy: { createdAt: "desc" },
+      });
+      return { success: true, data: items };
+    } catch (error) {
+      console.error("[boostPlanModel.getByType]", error);
+      return { success: false, error: "Failed to fetch boost plans by type." };
+    }
+  },
 
-// 🔹 Create a new boost plan
-export async function createBoostPlan(data: {
-  type: PlanType;
-  title: string;
-  description?: string;
-  price: number;
-  views?: number;
-  likes?: number;
-  isActive?: boolean;
-}) {
-  return prisma.boostPlan.create({ data });
-}
+  async create(data: {
+    type: PlanType;
+    title: string;
+    description?: string;
+    price: number;
+    views?: number;
+    likes?: number;
+    isActive?: boolean;
+  }) {
+    try {
+      const item = await prisma.boostPlan.create({ data });
+      return { success: true, data: item };
+    } catch (error) {
+      console.error("[boostPlanModel.create]", error);
+      return { success: false, error: "Failed to create boost plan." };
+    }
+  },
 
-// 🔹 Update a boost plan by ID
-export async function updateBoostPlan(id: string, data: Partial<{
-  type: PlanType;
-  title: string;
-  description: string;
-  price: number;
-  views: number;
-  likes: number;
-  isActive: boolean;
-}>) {
-  return prisma.boostPlan.update({
-    where: { id },
-    data,
-  });
-}
+  async update(
+    id: string,
+    data: Partial<{
+      type: PlanType;
+      title: string;
+      description: string;
+      price: number;
+      views: number;
+      likes: number;
+      isActive: boolean;
+    }>
+  ) {
+    try {
+      const item = await prisma.boostPlan.update({
+        where: { id },
+        data,
+      });
+      return { success: true, data: item };
+    } catch (error) {
+      console.error("[boostPlanModel.update]", error);
+      return { success: false, error: "Failed to update boost plan." };
+    }
+  },
 
-// 🔹 Soft delete (deactivate) a boost plan
-export async function deactivateBoostPlan(id: string) {
-  return prisma.boostPlan.update({
-    where: { id },
-    data: { isActive: false },
-  });
-}
+  async deactivate(id: string) {
+    try {
+      const item = await prisma.boostPlan.update({
+        where: { id },
+        data: { isActive: false },
+      });
+      return { success: true, data: item };
+    } catch (error) {
+      console.error("[boostPlanModel.deactivate]", error);
+      return { success: false, error: "Failed to deactivate boost plan." };
+    }
+  },
 
-// 🔹 Reactivate a boost plan
-export async function activateBoostPlan(id: string) {
-  return prisma.boostPlan.update({
-    where: { id },
-    data: { isActive: true },
-  });
-}
+  async activate(id: string) {
+    try {
+      const item = await prisma.boostPlan.update({
+        where: { id },
+        data: { isActive: true },
+      });
+      return { success: true, data: item };
+    } catch (error) {
+      console.error("[boostPlanModel.activate]", error);
+      return { success: false, error: "Failed to activate boost plan." };
+    }
+  },
 
-// 🔹 Upsert boost plan by ID
-export async function upsertBoostPlan(plan: {
-  id: string;
-  type: PlanType;
-  title: string;
-  description?: string;
-  price: number;
-  views?: number;
-  likes?: number;
-  isActive?: boolean;
-}) {
-  return prisma.boostPlan.upsert({
-    where: { id: plan.id },
-    update: plan,
-    create: plan,
-  });
-}
+  async upsert(plan: {
+    id: string;
+    type: PlanType;
+    title: string;
+    description?: string;
+    price: number;
+    views?: number;
+    likes?: number;
+    isActive?: boolean;
+  }) {
+    try {
+      const item = await prisma.boostPlan.upsert({
+        where: { id: plan.id },
+        update: plan,
+        create: plan,
+      });
+      return { success: true, data: item };
+    } catch (error) {
+      console.error("[boostPlanModel.upsert]", error);
+      return { success: false, error: "Failed to upsert boost plan." };
+    }
+  },
+};

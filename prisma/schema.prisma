@@ -17,6 +17,7 @@ model User {
 
   wallet       Wallet?
   orders       Order[]
+  watchHistory WatchHistory[]
   transactions Transaction[]
 
   @@index([lastActiveAt])
@@ -92,6 +93,8 @@ model Order {
   status     OrderStatus @default(PENDING)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  watchHistory WatchHistory[] 
 
   user       User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
   boostPlan  BoostPlan @relation(fields: [planId], references: [id], onDelete: Cascade)

@@ -1,90 +1,132 @@
 import { Request, Response } from "express";
-import * as BoostPlanModel from "../models/boost-plan.model.js";
+import { boostPlanModel } from "../models/boost-plan.model.js";
+import { logger } from "../utils/log.js";
 import { PlanType } from "@prisma/client";
 
-export const getAllBoostPlans = async (req: Request, res: Response) => {
-  try {
-    const plans = await BoostPlanModel.getAllBoostPlans();
-    return res.status(200).json({ success: true, data: plans });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Error fetching boost plans", error: err });
-  }
-};
-
-export const getBoostPlanById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const plan = await BoostPlanModel.getBoostPlanById(id);
-
-    if (!plan) return res.status(404).json({ success: false, message: "Plan not found" });
-
-    return res.status(200).json({ success: true, data: plan });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Error fetching plan", error: err });
-  }
-};
-
-export const getBoostPlansByType = async (req: Request, res: Response) => {
-  try {
-    const { type } = req.query;
-    if (!type || !["VIEW", "LIKE"].includes(type as string)) {
-      return res.status(400).json({ success: false, message: "Invalid or missing type" });
+export const boostPlanController = {
+  async list(req: Request, res: Response) {
+    try {
+      const result = await boostPlanModel.getAll();
+      if (result.success) {
+        res.json({ success: true, data: result.data });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.list: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error fetching boost plans." });
     }
+  },
 
-    const plans = await BoostPlanModel.getBoostPlansByType(type as PlanType);
-    return res.status(200).json({ success: true, data: plans });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Error fetching plans", error: err });
-  }
-};
+  async getById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const result = await boostPlanModel.getById(id);
 
-export const createBoostPlan = async (req: Request, res: Response) => {
-  try {
-    const { title, description, price, type, views = 0, likes = 0, isActive = true } = req.body;
-
-    if (!title || !type || !price) {
-      return res.status(400).json({ success: false, message: "Missing required fields" });
+      if (result.success && result.data) {
+        res.json({ success: true, data: result.data });
+      } else {
+        res.status(404).json({ success: false, error: "Plan not found." });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.getById: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error fetching plan." });
     }
+  },
 
-    const plan = await BoostPlanModel.createBoostPlan({ title, description, price, type, views, likes, isActive });
+  async getByType(req: Request, res: Response) {
+    try {
+      const { type } = req.query;
+      if (!type || !["VIEW", "LIKE"].includes(type as string)) {
+        return res.status(400).json({ success: false, error: "Invalid or missing type" });
+      }
 
-    return res.status(201).json({ success: true, data: plan });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Error creating plan", error: err });
-  }
-};
+      const result = await boostPlanModel.getByType(type as PlanType);
+      if (result.success) {
+        res.json({ success: true, data: result.data });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.getByType: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error fetching plans by type." });
+    }
+  },
 
-export const updateBoostPlan = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const updates = req.body;
+  async create(req: Request, res: Response) {
+    try {
+      const { title, description, price, type, views = 0, likes = 0, isActive = true } = req.body;
 
-    const updated = await BoostPlanModel.updateBoostPlan(id, updates);
+      if (!title || !type || !price) {
+        return res.status(400).json({ success: false, error: "Missing required fields." });
+      }
 
-    return res.status(200).json({ success: true, data: updated });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Error updating plan", error: err });
-  }
-};
+      const result = await boostPlanModel.create({ title, description, price, type, views, likes, isActive });
 
-export const deactivateBoostPlan = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const updated = await BoostPlanModel.deactivateBoostPlan(id);
+      if (result.success) {
+        res.status(201).json({ success: true, data: result.data });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.create: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error creating plan." });
+    }
+  },
 
-    return res.status(200).json({ success: true, data: updated });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Error deactivating plan", error: err });
-  }
-};
+  async update(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
 
-export const activateBoostPlan = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const updated = await BoostPlanModel.activateBoostPlan(id);
+      const result = await boostPlanModel.update(id, updates);
+      if (result.success) {
+        res.json({ success: true, data: result.data });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.update: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error updating plan." });
+    }
+  },
 
-    return res.status(200).json({ success: true, data: updated });
-  } catch (err) {
-    return res.status(500).json({ success: false, message: "Error activating plan", error: err });
-  }
+  async deactivate(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const result = await boostPlanModel.deactivate(id);
+
+      if (result.success) {
+        res.json({ success: true, data: result.data });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.deactivate: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error deactivating plan." });
+    }
+  },
+
+  async activate(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const result = await boostPlanModel.activate(id);
+
+      if (result.success) {
+        res.json({ success: true, data: result.data });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.activate: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error activating plan." });
+    }
+  },
 };

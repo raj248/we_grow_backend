@@ -1,21 +1,28 @@
 import express from "express";
-import * as BoostPlanController from "../controllers/boost-plan.controller.js";
+import { boostPlanController } from "../controllers/boost-plan.controller.js";
 
 const router = express.Router();
 
 // GET all active boost plans (optionally filter by type)
-router.get("/", BoostPlanController.getAllBoostPlans);
+router.get("/", boostPlanController.list);
 
 // GET a specific plan by ID
-router.get("/:id", BoostPlanController.getBoostPlanById);
+router.get("/:id", boostPlanController.getById);
 
 // POST a new plan
-router.post("/", BoostPlanController.createBoostPlan);
+router.post("/", boostPlanController.create);
 
 // PATCH update a plan by ID
-router.patch("/:id", BoostPlanController.updateBoostPlan);
+router.patch("/:id", boostPlanController.update);
 
-// DELETE a plan by ID
-router.delete("/:id", BoostPlanController.deactivateBoostPlan);
+// 
+// GET plans by type
+router.get("/type", boostPlanController.getByType);
+
+// PATCH deactivate a plan by ID
+router.patch("/deactivate/:id", boostPlanController.deactivate);
+
+// PATCH activate a plan by ID
+router.patch("/activate/:id", boostPlanController.activate);
 
 export default router;
