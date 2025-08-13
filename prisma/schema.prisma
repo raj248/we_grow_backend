@@ -88,6 +88,7 @@ model Order {
   id         String   @id @default(cuid())
   userId     String
   planId     String
+  url        String
   status     OrderStatus @default(PENDING)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -109,4 +110,18 @@ enum OrderStatus {
   ACTIVE
   COMPLETED
   CANCELLED
+}
+
+model WatchHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  orderId   String
+  watchedAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orderId]) // ensures a user can't watch the same order twice
+  @@index([orderId])
+  @@index([userId])
 }

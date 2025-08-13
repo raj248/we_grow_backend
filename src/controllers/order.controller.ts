@@ -7,10 +7,10 @@ import { setLastUpdated } from '../utils/cacheManager.js';
 
 export const makeOrder = async (req: Request, res: Response) => {
   try {
-    const { userId, planId } = req.body;
+    const { userId, planId, link } = req.body;
 
-    if (!userId || !planId) {
-      return res.status(400).json({ message: "Missing userId or planId" });
+    if (!userId || !planId || !link) {
+      return res.status(400).json({ message: "Missing userId or planId or link" });
     }
 
     // Fetch the plan details
@@ -40,6 +40,7 @@ export const makeOrder = async (req: Request, res: Response) => {
           id: orderId,
           userId,
           planId,
+          url: link,
           status: "PENDING", // or "PROCESSING"
         },
       }),

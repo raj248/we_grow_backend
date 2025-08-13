@@ -1,3 +1,10 @@
+### TODO
+- make a new route, order
+    order/new POST
+    order/:id GET a single order
+    order/watch/ GET a video to watch
+
+
 Here’s a detailed, forward-thinking plan to implement a wallet with in-app purchases (IAPs), transaction tracking, and future scalability in your app:
 
 ---
