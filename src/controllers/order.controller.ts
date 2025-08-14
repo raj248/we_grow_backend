@@ -2,8 +2,29 @@ import { Request, Response } from "express";
 import * as orderService from "../services/order.service.js";
 import { orderModel } from "models/order.model.js";
 import { generateEarningToken } from "utils/earnToken.js";
+import { setLastUpdated } from "utils/cacheManager.js";
+import { cacheKeys } from "utils/cacheKeys.js";
 
 export const orderController = {
+  async getAll(req: Request, res: Response) {
+    try {
+      const orders = await orderModel.getAll();
+      return res.status(200).json({ success: true, data: orders });
+    } catch (error) {
+      console.error("[getAllOrders]", error);
+      return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  },
+  async getByUser(req: Request, res: Response) {
+    try {
+      const { userId } = req.params;
+      const orders = await orderModel.getOrdersByUserId(userId);
+      return res.status(200).json({ success: true, data: orders });
+    } catch (error) {
+      console.error("[getOrders]", error);
+      return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  },
   async makeOrder(req: Request, res: Response) {
     try {
       const { userId, planId, link } = req.body;
@@ -20,6 +41,8 @@ export const orderController = {
         return res.status(result.statusCode).json({ message: result.message });
       }
 
+      setLastUpdated(cacheKeys.orderInfo(userId))
+      setLastUpdated(cacheKeys.orderList())
       return res.status(200).json(result);
     } catch (err) {
       console.error("[makeOrder]", err);

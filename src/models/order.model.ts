@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const orderModel = {
+
   async createOrderWithTransaction(
     orderId: string,
     userId: string,
@@ -32,7 +33,7 @@ export const orderModel = {
           type: "DEBIT",
           source: "Plan Purchase",
           status: "SUCCESS",
-          transactionId: orderId,
+          transactionId: orderId, // RazorPayID
         },
       }),
     ]);
@@ -65,4 +66,14 @@ export const orderModel = {
     return order;
   },
 
+  async getAll() {
+    return await prisma.order.findMany();
+  },
+  async getOrdersByUserId(userId: string) {
+    return await prisma.order.findMany({
+      where: {
+        userId,
+      },
+    });
+  },
 };

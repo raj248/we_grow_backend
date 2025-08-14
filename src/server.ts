@@ -31,6 +31,7 @@ import TopupRoute from "./routes/topup.routes.js";
 import walletRoute from "./routes/wallet.routes.js";
 import transactionRoute from "./routes/transaction.routes.js"
 import boostPlanRoute from "./routes/boost-plan.routes.js"
+import orderRoute from "./routes/order.routes.js"
 import { format } from 'date-fns';
 
 app.use(logResponseBody);
@@ -60,7 +61,7 @@ app.use("/api/topup-options", TopupRoute)
 app.use('/api/wallet', walletRoute);
 app.use('/api/transactions', transactionRoute);
 app.use('/api/boost-plans', boostPlanRoute);
-
+app.use('/api/order', orderRoute)
 // Serve uploaded files statically if needed:
 app.use('/uploads', express.static('uploads'));
 

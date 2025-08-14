@@ -5,7 +5,10 @@ export const cacheKeys = {
   // courseByType: (type: string) => `course:type:${type}`,
   transactionInfo: (id: string) => `transaction:${id}:info`,
   wallet: (id: string) => `wallet:${id}:info`,
-  // courseStats: (id: string) => `course:${id}:withStats`,
+
+  orderList: () => 'order:all:list',
+  orderInfo: (id: string) => `order:${id}:info`,
+  orderStats: (id: string) => `order:${id}:withStats`,
 
   topicByCourseType: (type: string) => `topic:courseType:${type}`,
 
