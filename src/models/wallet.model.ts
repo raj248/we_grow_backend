@@ -45,7 +45,7 @@ export const WalletModel = {
     });
   },
 
-  async rewardWithTransaction(userId: string, amount: number, tId) {
+  async rewardWithTransaction(userId: string, orderId: string, amount: number, tId: string) {
     return prisma.$transaction([
       prisma.wallet.update({
         where: { userId },
@@ -56,14 +56,22 @@ export const WalletModel = {
       prisma.transaction.create({
         data: {
           userId,
-          amount: amount,
+          amount,
           type: "CREDIT",
           source: "Watch Reward",
           status: "SUCCESS",
           transactionId: tId,
         },
       }),
+      prisma.watchHistory.create({
+        data: { userId, orderId },
+      }),
+      prisma.order.update({
+        where: { id: orderId },
+        data: {
+          completedCount: { increment: 1 },
+        },
+      }),
     ]);
   },
-
 };

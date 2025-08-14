@@ -74,6 +74,12 @@ export const orderModel = {
       where: {
         userId,
       },
+      include: {
+        boostPlan: true,
+      },
+      // orderBy: {
+      //   createdAt: "desc",
+      // },
     });
   },
 };

@@ -25,14 +25,14 @@ export async function seedBoostPlans() {
       views: 1000,
       price: 70,
       // duration: 5,
-      type: "LIKE" as "VIEW" | "LIKE"
+      type: "VIEW" as "VIEW" | "LIKE"
     },
     {
       title: 'Influencer Pack',
       views: 5000,
       price: 300,
       // duration: 7,
-      type: "LIKE" as "VIEW" | "LIKE"
+      type: "VIEW" as "VIEW" | "LIKE"
     },
   ];
 
