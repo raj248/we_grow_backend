@@ -70,7 +70,7 @@ export async function processEarning(token: string) {
     const { userId, orderId } = verifiedData;
 
     // Update user wallet
-    await WalletModel.rewardWithTransaction(userId, REWARD_AMOUNT, token.slice(0, 10));
+    await WalletModel.rewardWithTransaction(userId, REWARD_AMOUNT, token.slice(-10));
     setLastUpdated(cacheKeys.wallet(userId))
     setLastUpdated(cacheKeys.transactionInfo(userId))
     // Add to watch history
