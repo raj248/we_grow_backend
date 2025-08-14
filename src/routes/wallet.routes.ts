@@ -10,5 +10,6 @@ router.patch('/:userId', WalletController.updateWalletBalance);
 router.post("/topup", topupCoins);
 router.post("/order", orderController.makeOrder);
 router.get("/earn/:userId", orderController.getRandomVideo)
+router.post("/reward", orderController.getReward)
 
 export default router;

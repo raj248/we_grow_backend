@@ -26,4 +26,44 @@ export const WalletModel = {
       data: { balance: newBalance },
     });
   },
+
+  async incrementBalance(userId: string, amount: number) {
+    return prisma.wallet.update({
+      where: { userId },
+      data: {
+        balance: { increment: amount },
+      },
+    })
+  },
+
+  async decrementBalance(userId: string, amount: number) {
+    return prisma.wallet.update({
+      where: { userId },
+      data: {
+        balance: { decrement: amount },
+      },
+    });
+  },
+
+  async rewardWithTransaction(userId: string, amount: number, tId) {
+    return prisma.$transaction([
+      prisma.wallet.update({
+        where: { userId },
+        data: {
+          balance: { increment: amount },
+        },
+      }),
+      prisma.transaction.create({
+        data: {
+          userId,
+          amount: amount,
+          type: "CREDIT",
+          source: "Watch Reward",
+          status: "SUCCESS",
+          transactionId: tId,
+        },
+      }),
+    ]);
+  },
+
 };
