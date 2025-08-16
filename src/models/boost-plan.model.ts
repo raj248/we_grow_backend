@@ -24,19 +24,6 @@ export const boostPlanModel = {
     }
   },
 
-  async getByType(type: PlanType) {
-    try {
-      const items = await prisma.boostPlan.findMany({
-        where: { type },
-        orderBy: { createdAt: "desc" },
-      });
-      return { success: true, data: items };
-    } catch (error) {
-      console.error("[boostPlanModel.getByType]", error);
-      return { success: false, error: "Failed to fetch boost plans by type." };
-    }
-  },
-
   async create(data: {
     type: PlanType;
     title: string;

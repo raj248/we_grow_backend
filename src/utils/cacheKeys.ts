@@ -10,7 +10,9 @@ export const cacheKeys = {
   orderInfo: (id: string) => `order:${id}:info`,
   orderStats: (id: string) => `order:${id}:withStats`,
 
-  topicByCourseType: (type: string) => `topic:courseType:${type}`,
+  planList: () => 'plan:all:list',
+  planInfo: (id: string) => `plan:${id}:info`,
+  // planStats: (id: string) => `plan:${id}:withStats`,
 
   topicInfo: (id: string) => `topic:${id}:info`,
   topicStats: (id: string) => `topic:${id}:withStats`,

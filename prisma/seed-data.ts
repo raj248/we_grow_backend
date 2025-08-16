@@ -10,29 +10,25 @@ export async function seedBoostPlans() {
       title: 'Starter Pack',
       views: 100,
       price: 10, // in coins
-      // duration: 1, // in days
-      type: "VIEW" as "VIEW" | "LIKE"
+      duration: 15, // in days
     },
     {
       title: 'Growth Pack',
       views: 500,
       price: 40,
-      // duration: 3,
-      type: "VIEW" as "VIEW" | "LIKE"
+      duration: 35,
     },
     {
       title: 'Pro Pack',
       views: 1000,
       price: 70,
-      // duration: 5,
-      type: "VIEW" as "VIEW" | "LIKE"
+      duration: 55,
     },
     {
       title: 'Influencer Pack',
       views: 5000,
       price: 300,
-      // duration: 7,
-      type: "VIEW" as "VIEW" | "LIKE"
+      duration: 75,
     },
   ];
 

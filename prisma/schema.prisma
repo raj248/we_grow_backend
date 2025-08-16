@@ -72,12 +72,11 @@ model TopupOptions {
 
 model BoostPlan {
   id          String   @id @default(cuid())
-  type        PlanType
   title       String
   description String?
   price       Int      // in coins
   views       Int      @default(0)
-  likes       Int      @default(0)
+  duration    Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

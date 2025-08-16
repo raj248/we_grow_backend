@@ -36,26 +36,6 @@ export const boostPlanController = {
     }
   },
 
-  async getByType(req: Request, res: Response) {
-    try {
-      const { type } = req.query;
-      if (!type || !["VIEW", "LIKE"].includes(type as string)) {
-        return res.status(400).json({ success: false, error: "Invalid or missing type" });
-      }
-
-      const result = await boostPlanModel.getByType(type as PlanType);
-      if (result.success) {
-        res.json({ success: true, data: result.data });
-      } else {
-        res.status(500).json({ success: false, error: result.error });
-      }
-    } catch (error) {
-      const err = error as Error;
-      logger.error(`boostPlanController.getByType: ${err.message}`);
-      res.status(500).json({ success: false, error: "Error fetching plans by type." });
-    }
-  },
-
   async create(req: Request, res: Response) {
     try {
       const { title, description, price, type, views = 0, likes = 0, isActive = true } = req.body;
