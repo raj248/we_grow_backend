@@ -64,7 +64,7 @@ export const orderController = {
       }
       const token = generateEarningToken(userId, order.id)
 
-      res.json({ success: true, data: { url: order.url, token } });
+      res.json({ success: true, data: { url: order.url, token, duration: order.boostPlan.duration } });
     } catch (error) {
       console.error("Error getting random video:", error);
       res.status(500).json({ success: false, error: "Internal server error" });

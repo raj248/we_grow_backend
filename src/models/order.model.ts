@@ -54,14 +54,9 @@ export const orderModel = {
       orderBy: {
         createdAt: "asc", // newest first (change if you want random)
       },
-      // include: {
-      //   boostPlan: true,
-      //   user: {
-      //     select: {
-      //       userId: true,
-      //     },
-      //   },
-      // },
+      include: {
+        boostPlan: true,
+      },
     });
     return order;
   },
