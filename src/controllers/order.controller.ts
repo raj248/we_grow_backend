@@ -74,7 +74,7 @@ export const orderController = {
     try {
       const { token, duration } = req.body;
 
-      const result = await orderService.processEarning(token);
+      const result = await orderService.processEarning(token, duration);
 
       if (!result.success) {
         return res.status(result.statusCode).json({ success: false, error: result.message });

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { boostPlanModel } from "../models/boost-plan.model.js";
 import { logger } from "../utils/log.js";
-import { PlanType } from "@prisma/client";
 
 export const boostPlanController = {
   async list(req: Request, res: Response) {

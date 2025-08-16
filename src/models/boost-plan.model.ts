@@ -114,4 +114,22 @@ export const boostPlanModel = {
       return { success: false, error: "Failed to upsert boost plan." };
     }
   },
+
+  async verifyDuration(orderId: string, duration: number): Promise<boolean> {
+    // Fetch order with related plan
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        boostPlan: true,
+      },
+    });
+
+    if (!order || !order.boostPlan) {
+      throw new Error("Order or related plan not found");
+    }
+
+    // Compare durations
+    return duration >= order.boostPlan.duration;
+  }
+
 };

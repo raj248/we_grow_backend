@@ -55,7 +55,7 @@ export const makeOrder = async (userId: string, planId: string, link: string) =>
 
 const REWARD_AMOUNT = 10; // coins per valid watch, adjust as needed
 
-export async function processEarning(token: string) {
+export async function processEarning(token: string, duration: number) {
   try {
     const verifiedData = verifyEarningToken(token);
 
@@ -68,6 +68,16 @@ export async function processEarning(token: string) {
     }
 
     const { userId, orderId } = verifiedData;
+
+    const isValid = await boostPlanModel.verifyDuration(orderId, duration);
+
+    if (!isValid) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Invalid duration",
+      };
+    }
 
     // Update user wallet
     await WalletModel.rewardWithTransaction(userId, orderId, REWARD_AMOUNT, token.slice(-10));
