@@ -62,7 +62,7 @@ export const orderController = {
       if (!order) {
         return res.status(404).json({ success: false, error: "No unwatched videos available" });
       }
-      const token = generateEarningToken(userId, order.id)
+      const token = generateEarningToken(userId, order.id, order.userId)
 
       res.json({ success: true, data: { url: order.url, token, duration: order.boostPlan.duration } });
     } catch (error) {
