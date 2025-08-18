@@ -6,7 +6,11 @@ const user_token_map = new Map<
   { token: string; timestamp: number; orderId: string }
 >();
 
-export function generateEarningToken(userId: string, orderId: string, clientId: string) {
+export function generateEarningToken(
+  userId: string,
+  orderId: string,
+  clientId: string
+) {
   const timestamp = Date.now();
   const payload = `${userId}:${orderId}:${clientId}:${timestamp}`;
   const signature = crypto
@@ -35,7 +39,7 @@ export function verifyEarningToken(token: string) {
   const now = Date.now();
 
   // Check 1-minute expiry
-  if (now - timestamp > 60_000) {
+  if (now - timestamp > 600_000) {
     user_token_map.delete(userId);
     return { verified: false, expired: true };
   }
@@ -51,4 +55,3 @@ export function verifyEarningToken(token: string) {
     timestamp,
   };
 }
-

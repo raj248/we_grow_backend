@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const orderModel = {
-
   async createOrderWithTransaction(
     orderId: string,
     userId: string,
@@ -17,7 +16,7 @@ export const orderModel = {
           userId,
           planId,
           url: link,
-          status: "PENDING",
+          status: "ACTIVE",
         },
       }),
       prisma.wallet.update({
@@ -44,7 +43,11 @@ export const orderModel = {
   async getUniqueUnwatchedOrder(userId: string) {
     const order = await prisma.order.findFirst({
       where: {
-        userId: { not: userId }, // not placed by same user
+        userId: {
+          not: userId,
+        }, // not placed by same user
+        status: { equals: "ACTIVE" },
+
         watchHistory: {
           none: {
             userId: userId, // not yet watched by this user
