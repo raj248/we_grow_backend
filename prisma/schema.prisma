@@ -8,17 +8,16 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  userId       String   @unique
+  id           String         @id @default(cuid())
+  userId       String         @unique
   fcmToken     String?
-  lastActiveAt DateTime @default(now())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  wallet       Wallet?
+  lastActiveAt DateTime       @default(now())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   orders       Order[]
-  watchHistory WatchHistory[]
   transactions Transaction[]
+  wallet       Wallet?
+  watchHistory WatchHistory[]
 
   @@index([lastActiveAt])
 }
@@ -26,28 +25,79 @@ model User {
 model Wallet {
   id        String   @id @default(cuid())
   userId    String   @unique
-  balance   Int      @default(50) // in coins
+  balance   Int      @default(50)
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
-
   user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model Transaction {
-  id             String   @id @default(cuid())
-  userId         String
-  type           TransactionType
-  amount         Int                                // in coins
-  source         String                             // e.g. 'purchase', 'reward', 'admin', etc.
-  transactionId  String   @unique                   // Google Play or Razorpay transaction ID
-  status         TransactionStatus @default(PENDING)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  user           User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  id            String            @id @default(cuid())
+  userId        String
+  type          TransactionType
+  amount        Int
+  source        String
+  transactionId String            @unique
+  status        TransactionStatus @default(PENDING)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  user          User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@index([userId])
   @@index([transactionId])
+}
+
+model TopupOptions {
+  id              String   @id @default(cuid())
+  coins           Int
+  googleProductId String   @unique
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model BoostPlan {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  price       Int
+  views       Int      @default(0)
+  duration    Int      @default(0)
+  reward      Int      @default(5)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]
+}
+
+model Order {
+  id             String         @id @default(cuid())
+  userId         String
+  planId         String
+  url            String
+  completedCount Int            @default(0)
+  status         OrderStatus    @default(PENDING)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  boostPlan      BoostPlan      @relation(fields: [planId], references: [id], onDelete: Cascade)
+  user           User           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  watchHistory   WatchHistory[]
+
+  @@index([userId])
+  @@index([planId])
+}
+
+model WatchHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  orderId   String
+  watchedAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@unique([userId, orderId])
+  @@index([orderId])
+  @@index([userId])
 }
 
 enum TransactionType {
@@ -61,70 +111,9 @@ enum TransactionStatus {
   FAILED
 }
 
-model TopupOptions {
-  id            String   @id @default(cuid())
-  coins         Int
-  googleProductId String @unique
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model BoostPlan {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  price       Int      // in coins
-  views       Int      @default(0)
-  duration    Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  orders      Order[]
-}
-
-model Order {
-  id         String   @id @default(cuid())
-  userId     String
-  planId     String
-  url        String
-  completedCount Int @default(0)
-  status     OrderStatus @default(PENDING)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  watchHistory WatchHistory[] 
-
-  user       User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  boostPlan  BoostPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([planId])
-}
-
-enum PlanType {
-  VIEW
-  LIKE
-}
-
 enum OrderStatus {
   PENDING
   ACTIVE
   COMPLETED
   CANCELLED
-}
-
-model WatchHistory {
-  id        String   @id @default(cuid())
-  userId    String
-  orderId   String
-  watchedAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, orderId]) // ensures a user can't watch the same order twice
-  @@index([orderId])
-  @@index([userId])
 }

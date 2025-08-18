@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding database...");
 
+  await seedBoostPlans();
   // 1. TopupOptions
   const TopupOptions = [
     { coins: 100, googleProductId: "coins_100" },
@@ -26,7 +27,6 @@ async function main() {
   }
 
   // 2. BoostPlans
-  await seedBoostPlans();
 
   // 3. Dummy User
   const dummyUser = await prisma.user.upsert({
@@ -70,7 +70,7 @@ async function main() {
       {
         userId: dummyUser.userId,
         planId: firstPlan.id,
-        url: "vnd.youtube://watch?v=dQw4w9WgXcQ",
+        url: "https://youtu.be/pbjR20eTLVs?si=-0wjBoEGx6P1T8p3",
         completedCount: 0,
         status: "ACTIVE",
       },

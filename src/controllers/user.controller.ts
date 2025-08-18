@@ -1,13 +1,15 @@
-import { Request, Response } from 'express';
-import { UserModel } from '../models/user.model.js';
-import { logger } from '../utils/log.js';
+import { Request, Response } from "express";
+import { UserModel } from "../models/user.model.js";
+import { logger } from "../utils/log.js";
 
 export const UserController = {
   async registerUser(req: Request, res: Response): Promise<void> {
     const { userId, fcmToken } = req.body;
 
     if (!userId || userId.length !== 8) {
-      res.status(400).json({ success: false, error: 'Invalid or missing userId' });
+      res
+        .status(400)
+        .json({ success: false, error: "Invalid or missing userId" });
       return;
     }
 
@@ -27,12 +29,14 @@ export const UserController = {
     const { fcmToken } = req.body;
 
     if (!id) {
-      res.status(400).json({ success: false, error: 'Missing User ID' });
+      res.status(400).json({ success: false, error: "Missing User ID" });
       return;
     }
 
-    if (!fcmToken || typeof fcmToken !== 'string') {
-      res.status(400).json({ success: false, error: 'Missing or invalid fcmToken' });
+    if (!fcmToken || typeof fcmToken !== "string") {
+      res
+        .status(400)
+        .json({ success: false, error: "Missing or invalid fcmToken" });
       return;
     }
 
@@ -44,15 +48,16 @@ export const UserController = {
       return;
     }
 
-    logger.info(`UserController.updateFcmToken: ${result.error}`);
     res.status(200).json({ success: true, message: result.error });
   },
 
   async updateLastActive(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
 
-    if (!id || typeof id !== 'string') {
-      res.status(400).json({ success: false, error: 'Missing or invalid userId' });
+    if (!id || typeof id !== "string") {
+      res
+        .status(400)
+        .json({ success: false, error: "Missing or invalid userId" });
       return;
     }
 
