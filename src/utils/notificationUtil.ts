@@ -3,7 +3,6 @@ import admin from "firebase-admin";
 import { logger } from "./log.js";
 
 if (!admin.apps.length) {
-  
   logger.log("Initializing Firebase Admin SDK...");
 
   admin.initializeApp({
