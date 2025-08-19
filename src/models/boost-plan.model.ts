@@ -1,4 +1,4 @@
-import { PrismaClient, PlanType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const boostPlanModel = {
@@ -25,7 +25,6 @@ export const boostPlanModel = {
   },
 
   async create(data: {
-    type: PlanType;
     title: string;
     description?: string;
     price: number;
@@ -45,7 +44,6 @@ export const boostPlanModel = {
   async update(
     id: string,
     data: Partial<{
-      type: PlanType;
       title: string;
       description: string;
       price: number;
@@ -94,7 +92,6 @@ export const boostPlanModel = {
 
   async upsert(plan: {
     id: string;
-    type: PlanType;
     title: string;
     description?: string;
     price: number;
@@ -130,6 +127,5 @@ export const boostPlanModel = {
 
     // Compare durations
     return duration >= order.boostPlan.duration;
-  }
-
+  },
 };
