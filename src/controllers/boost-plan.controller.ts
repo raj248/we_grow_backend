@@ -14,7 +14,9 @@ export const boostPlanController = {
     } catch (error) {
       const err = error as Error;
       logger.error(`boostPlanController.list: ${err.message}`);
-      res.status(500).json({ success: false, error: "Error fetching boost plans." });
+      res
+        .status(500)
+        .json({ success: false, error: "Error fetching boost plans." });
     }
   },
 
@@ -37,13 +39,30 @@ export const boostPlanController = {
 
   async create(req: Request, res: Response) {
     try {
-      const { title, description, price, type, views = 0, likes = 0, isActive = true } = req.body;
+      const {
+        title,
+        description,
+        price,
+        type,
+        views = 0,
+        likes = 0,
+        isActive = true,
+      } = req.body;
 
       if (!title || !type || !price) {
-        return res.status(400).json({ success: false, error: "Missing required fields." });
+        return res
+          .status(400)
+          .json({ success: false, error: "Missing required fields." });
       }
 
-      const result = await boostPlanModel.create({ title, description, price, type, views, likes, isActive });
+      const result = await boostPlanModel.create({
+        title,
+        description,
+        price,
+        views,
+        likes,
+        isActive,
+      });
 
       if (result.success) {
         res.status(201).json({ success: true, data: result.data });
@@ -88,7 +107,9 @@ export const boostPlanController = {
     } catch (error) {
       const err = error as Error;
       logger.error(`boostPlanController.deactivate: ${err.message}`);
-      res.status(500).json({ success: false, error: "Error deactivating plan." });
+      res
+        .status(500)
+        .json({ success: false, error: "Error deactivating plan." });
     }
   },
 
