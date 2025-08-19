@@ -64,7 +64,6 @@ export const orderController = {
       }
 
       const order = await orderModel.getUniqueUnwatchedOrder(userId);
-
       if (!order) {
         return res
           .status(404)

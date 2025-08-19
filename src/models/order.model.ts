@@ -1,5 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+import { BoostPlan, Order, OrderStatus, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+
+type RawOrderWithBoostPlan = Order & {
+  boostPlan: BoostPlan;
+  boostPlan_id: string;
+  boostPlan_title: string;
+  boostPlan_description?: string;
+  boostPlan_price: number;
+  boostPlan_views: number;
+  boostPlan_duration: number;
+  boostPlan_reward: number;
+  boostPlan_isActive: boolean;
+  boostPlan_createdAt: Date;
+  boostPlan_updatedAt: Date;
+};
 
 export const orderModel = {
   async createOrderWithTransaction(
@@ -38,30 +52,54 @@ export const orderModel = {
     ]);
   },
   /**
-   * Get a random order not watched by the user and not created by the user
+   * Get a random order not watched by the user and not created by the user.
+   *
+   * For MYSQL ONLY
    */
   async getUniqueUnwatchedOrder(userId: string) {
-    const order = await prisma.order.findFirst({
-      where: {
-        userId: {
-          not: userId,
-        }, // not placed by same user
-        status: { equals: "ACTIVE" },
+    const [randomOrder] = await prisma.$queryRaw<RawOrderWithBoostPlan[]>`
+      SELECT o.*, 
+            b.id AS boostPlan_id, 
+            b.title AS boostPlan_title,
+            b.description AS boostPlan_description,
+            b.price AS boostPlan_price,
+            b.views AS boostPlan_views,
+            b.duration AS boostPlan_duration,
+            b.reward AS boostPlan_reward,
+            b.isActive AS boostPlan_isActive,
+            b.createdAt AS boostPlan_createdAt,
+            b.updatedAt AS boostPlan_updatedAt
+      FROM \`Order\` o
+      JOIN \`BoostPlan\` b ON o.planId = b.id
+      WHERE o.userId != ${userId}
+        AND o.status = 'ACTIVE'
+        AND NOT EXISTS (
+          SELECT 1 
+          FROM \`WatchHistory\` w
+          WHERE w.orderId = o.id
+            AND w.userId = ${userId}
+        )
+      ORDER BY RAND()
+      LIMIT 1;
+    `;
 
-        watchHistory: {
-          none: {
-            userId: userId, // not yet watched by this user
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "asc", // newest first (change if you want random)
-      },
-      include: {
-        boostPlan: true,
-      },
-    });
-    return order;
+    if (!randomOrder) return null;
+
+    // map boostPlan fields into nested object
+    randomOrder.boostPlan = {
+      id: randomOrder.boostPlan_id,
+      title: randomOrder.boostPlan_title,
+      description: randomOrder.boostPlan_description,
+      price: randomOrder.boostPlan_price,
+      views: randomOrder.boostPlan_views,
+      duration: randomOrder.boostPlan_duration,
+      reward: randomOrder.boostPlan_reward,
+      isActive: randomOrder.boostPlan_isActive,
+      createdAt: randomOrder.boostPlan_createdAt,
+      updatedAt: randomOrder.boostPlan_updatedAt,
+    };
+
+    return randomOrder;
   },
 
   async getAll() {
