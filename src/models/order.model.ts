@@ -1,4 +1,4 @@
-import { BoostPlan, Order, OrderStatus, PrismaClient } from "@prisma/client";
+import { BoostPlan, Order, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 type RawOrderWithBoostPlan = Order & {

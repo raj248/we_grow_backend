@@ -1,7 +1,7 @@
 import express from "express";
 import { boostPlanController } from "../controllers/boost-plan.controller.js";
-import { cacheMiddleware } from "middleware/cacheMiddleware.js";
-import { cacheKeys } from "utils/cacheKeys.js";
+import { cacheMiddleware } from "../middleware/cacheMiddleware.js";
+import { cacheKeys } from "../utils/cacheKeys.js";
 
 const router = express.Router();
 
@@ -9,7 +9,11 @@ const router = express.Router();
 router.get("/", cacheMiddleware(cacheKeys.planList), boostPlanController.list);
 
 // GET a specific plan by ID
-router.get("/:id", cacheMiddleware((req) => cacheKeys.planInfo(req.params.id)), boostPlanController.getById);
+router.get(
+  "/:id",
+  cacheMiddleware((req) => cacheKeys.planInfo(req.params.id)),
+  boostPlanController.getById
+);
 
 // POST a new plan
 router.post("/", boostPlanController.create);

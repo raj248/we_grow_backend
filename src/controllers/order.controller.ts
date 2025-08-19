@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import * as orderService from "../services/order.service.js";
-import { orderModel } from "models/order.model.js";
-import { generateEarningToken } from "utils/earnToken.js";
-import { setLastUpdated } from "utils/cacheManager.js";
-import { cacheKeys } from "utils/cacheKeys.js";
+import { orderModel } from "../models/order.model.js";
+import { generateEarningToken } from "../utils/earnToken.js";
+import { setLastUpdated } from "../utils/cacheManager.js";
+import { cacheKeys } from "../utils/cacheKeys.js";
 
 export const orderController = {
   async getAll(req: Request, res: Response) {
