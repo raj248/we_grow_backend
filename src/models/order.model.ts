@@ -134,3 +134,23 @@ export const orderModel = {
     });
   },
 };
+
+export async function checkAndCompleteOrder(orderId: string) {
+  // fetch order with related boost plan
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { boostPlan: true },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  // required views
+  const requiredViews = order.boostPlan.views;
+
+  if (order.completedCount >= requiredViews && order.status !== "COMPLETED") {
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status: "COMPLETED" },
+    });
+  }
+}

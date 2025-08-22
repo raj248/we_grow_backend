@@ -4,12 +4,16 @@ import { cacheKeys } from "../utils/cacheKeys.js";
 import { setLastUpdated } from "../utils/cacheManager.js";
 import { verifyEarningToken } from "../utils/earnToken.js";
 
-import { orderModel } from "../models/order.model.js";
+import { checkAndCompleteOrder, orderModel } from "../models/order.model.js";
 import { boostPlanModel } from "../models/boost-plan.model.js";
 import { WalletModel } from "../models/wallet.model.js";
 import { watchHistoryModel } from "models/watchHistory.model.js";
 
-export const makeOrder = async (userId: string, planId: string, link: string) => {
+export const makeOrder = async (
+  userId: string,
+  planId: string,
+  link: string
+) => {
   // Validate plan
   const plan = await boostPlanModel.getById(planId);
   if (!plan.success || !plan.data) {
@@ -51,8 +55,6 @@ export const makeOrder = async (userId: string, planId: string, link: string) =>
   };
 };
 
-
-
 const REWARD_AMOUNT = 10; // coins per valid watch, adjust as needed
 
 export async function processEarning(token: string, duration: number) {
@@ -66,7 +68,7 @@ export async function processEarning(token: string, duration: number) {
         message: "Invalid or expired earning token",
       };
     }
-    console.log(verifiedData)
+    console.log(verifiedData);
     const { userId, orderId, clientId } = verifiedData;
 
     const isValid = await boostPlanModel.verifyDuration(orderId, duration);
@@ -80,10 +82,25 @@ export async function processEarning(token: string, duration: number) {
     }
 
     // Update user wallet
-    await WalletModel.rewardWithTransaction(userId, orderId, REWARD_AMOUNT, token.slice(-10));
-    setLastUpdated(cacheKeys.wallet(userId))
-    setLastUpdated(cacheKeys.orderInfo(clientId))
-    setLastUpdated(cacheKeys.transactionInfo(userId))
+    const [wallet, transaction, history, order] =
+      await WalletModel.rewardWithTransaction(
+        userId,
+        orderId,
+        REWARD_AMOUNT,
+        token.slice(-10)
+      );
+    if (!wallet || !transaction || !history || !order) {
+      return {
+        success: false,
+        statusCode: 500,
+        message: "Failed to process reward transaction",
+      };
+    }
+    await checkAndCompleteOrder(orderId);
+
+    setLastUpdated(cacheKeys.wallet(userId));
+    setLastUpdated(cacheKeys.orderInfo(clientId));
+    setLastUpdated(cacheKeys.transactionInfo(userId));
 
     return {
       success: true,
