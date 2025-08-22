@@ -6,7 +6,7 @@ import { cacheKeys } from "../utils/cacheKeys.js";
 const router = express.Router();
 
 router.get("/", cacheMiddleware(cacheKeys.orderList), orderController.getAll);
-// router.get("/:id", orderController.getOne);
+router.get("/:id", orderController.getById);
 // router.delete("/:id", orderController.delete);
 
 router.get(

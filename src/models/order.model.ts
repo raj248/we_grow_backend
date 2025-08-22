@@ -103,7 +103,14 @@ export const orderModel = {
   },
 
   async getAll() {
-    return await prisma.order.findMany();
+    return await prisma.order.findMany({
+      include: {
+        boostPlan: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
   },
   async getOrdersByUserId(userId: string) {
     return await prisma.order.findMany({
@@ -116,6 +123,14 @@ export const orderModel = {
       // orderBy: {
       //   createdAt: "desc",
       // },
+    });
+  },
+  async getById(id: string) {
+    return await prisma.order.findUnique({
+      where: { id },
+      include: {
+        boostPlan: true,
+      },
     });
   },
 };

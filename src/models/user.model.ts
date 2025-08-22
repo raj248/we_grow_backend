@@ -1,10 +1,33 @@
-import { PrismaClient } from '@prisma/client';
-import { logger } from '../utils/log.js';
-import { subHours } from 'date-fns';
+import { PrismaClient } from "@prisma/client";
+import { logger } from "../utils/log.js";
+import { subHours } from "date-fns";
 
 const prisma = new PrismaClient();
 
 export const UserModel = {
+  async getAll() {
+    try {
+      const users = await prisma.user.findMany({
+        include: { wallet: true },
+      });
+      return { success: true, data: users };
+    } catch (error) {
+      logger.error(error);
+      return { success: false, error: "Failed to fetch users." };
+    }
+  },
+  async getUserById(userId: string) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { userId },
+        include: { wallet: true },
+      });
+      return { success: true, data: user };
+    } catch (error) {
+      logger.error(error);
+      return { success: false, error: "Failed to fetch user." };
+    }
+  },
   async upsertUser(userId: string, fcmToken?: string) {
     try {
       const user = await prisma.user.upsert({
@@ -20,11 +43,11 @@ export const UserModel = {
           },
           transactions: {
             create: {
-              type: 'CREDIT',
+              type: "CREDIT",
               amount: 50,
               transactionId: `initial_${userId}`,
-              source: 'initial',
-              status: 'SUCCESS',
+              source: "initial",
+              status: "SUCCESS",
             },
           },
         },
@@ -34,10 +57,9 @@ export const UserModel = {
       return { success: true, data: user };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to register user.' };
+      return { success: false, error: "Failed to register user." };
     }
   },
-
   async updateFcmToken(userId: string, fcmToken: string) {
     try {
       const user = await prisma.user.findUnique({ where: { userId: userId } });
@@ -48,16 +70,23 @@ export const UserModel = {
           data: { fcmToken },
         });
 
-        return { success: true, data: updatedUser, message: "FCM token updated successfully." };
+        return {
+          success: true,
+          data: updatedUser,
+          message: "FCM token updated successfully.",
+        };
       } else {
         const newUser = await this.upsertUser(userId, fcmToken);
-        return { success: true, data: newUser, message: "User not found. New user created and FCM token registered." };
+        return {
+          success: true,
+          data: newUser,
+          message: "User not found. New user created and FCM token registered.",
+        };
       }
     } catch (error) {
       return { success: false, error: `Database error: ${error}` };
     }
   },
-
   async updateLastActive(userId: string) {
     try {
       const updated = await prisma.user.update({
@@ -67,10 +96,9 @@ export const UserModel = {
       return { success: true };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to update last active time.' };
+      return { success: false, error: "Failed to update last active time." };
     }
   },
-
   async getActiveLast24Hours() {
     try {
       const since = subHours(new Date(), 24);
@@ -82,7 +110,7 @@ export const UserModel = {
       return { success: true, data: count };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to count active users.' };
+      return { success: false, error: "Failed to count active users." };
     }
   },
 };

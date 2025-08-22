@@ -3,6 +3,33 @@ import { UserModel } from "../models/user.model.js";
 import { logger } from "../utils/log.js";
 
 export const UserController = {
+  async getAll(req: Request, res: Response): Promise<void> {
+    try {
+      const result = await UserModel.getAll();
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      logger.error(`UserController.getAll: ${error}`);
+      res.status(500).json({ success: false, error: "Internal server error" });
+    }
+  },
+  async getById(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    try {
+      const result = await UserModel.getUserById(id);
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(404).json(result);
+      }
+    } catch (error) {
+      logger.error(`UserController.getById: ${error}`);
+      res.status(500).json({ success: false, error: "Internal server error" });
+    }
+  },
   async registerUser(req: Request, res: Response): Promise<void> {
     const { userId, fcmToken } = req.body;
 
@@ -23,7 +50,6 @@ export const UserController = {
 
     res.status(201).json(result);
   },
-
   async updateFcmToken(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const { fcmToken } = req.body;
@@ -50,7 +76,6 @@ export const UserController = {
 
     res.status(200).json({ success: true, message: result.error });
   },
-
   async updateLastActive(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
 
