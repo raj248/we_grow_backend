@@ -69,27 +69,16 @@ app.use("/api/order", orderRoute);
 app.use("/uploads", express.static("uploads"));
 
 // After API routes, before 404 JSON:
-app.use((req, res) => {
-  if (req.originalUrl.startsWith("/api")) {
-    // 🚨 Any unknown /api/* route → 404 JSON
-    logger.warn(`API route not found: ${req.method} ${req.originalUrl}`);
-    return res.status(404).json({ error: "API route not found" });
+app.use((req, res, next) => {
+  if (req.url.startsWith("/api")) {
+    return res.status(404).json({ error: "Not found" });
   }
 
-  // 🌐 Otherwise → serve SPA index.html
-  logger.warn(`Redirected to Public Index: ${req.method} ${req.originalUrl}`);
-  res.sendFile(path.join(process.cwd(), "public", "index.html"));
-});
+  if (req.url.startsWith("/assets")) {
+    return next(); // let static middleware handle assets
+  }
 
-// Handle unknown routes
-app.use((req, res) => {
-  logger.warn(`Unknown route accessed: ${req.method} ${req.originalUrl}`);
-  res.status(404).json({
-    success: false,
-    error: "Route not found",
-    path: req.originalUrl,
-    method: req.method,
-  });
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
 await loadCacheMeta(); // before app.listen()
