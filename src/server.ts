@@ -1,69 +1,85 @@
-import 'dotenv/config';
+import "dotenv/config";
 
 import express from "express";
 import cors from "cors";
 import path from "path";
 import { logger } from "./utils/log.js";
-import AnsiToHtml from 'ansi-to-html';
+import AnsiToHtml from "ansi-to-html";
 
 const ansiToHtml = new AnsiToHtml();
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: true, // or your frontend IP/domain
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: true, // or your frontend IP/domain
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
 // Serve public folder for debug
-app.use(express.static(path.join(process.cwd(), 'public')));
+app.use(express.static(path.join(process.cwd(), "public")));
 
 import { logResponseBody } from "./middleware/logResponseBody.js";
-import { loadCacheMeta } from './utils/cacheManager.js';
+import { loadCacheMeta } from "./utils/cacheManager.js";
 import mainRoute from "./routes/main.routes.js";
 import userRoute from "./routes/user.routes.js";
 import notificationsRoute from "./routes/notifications.routes.js";
 import TopupRoute from "./routes/topup.routes.js";
 import walletRoute from "./routes/wallet.routes.js";
-import transactionRoute from "./routes/transaction.routes.js"
-import boostPlanRoute from "./routes/boost-plan.routes.js"
-import orderRoute from "./routes/order.routes.js"
-import { format } from 'date-fns';
+import transactionRoute from "./routes/transaction.routes.js";
+import boostPlanRoute from "./routes/boost-plan.routes.js";
+import orderRoute from "./routes/order.routes.js";
+import { format } from "date-fns";
 
 app.use(logResponseBody);
 
 app.get("/health", (req, res) => {
   res.json({
     success: true,
-    timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss'),
-    uptime: process.uptime() // in seconds
+    timestamp: format(new Date().toISOString(), "yyyy-MM-dd HH:mm:ss"),
+    uptime: process.uptime(), // in seconds
   });
 });
 
-app.get("/status", (req, res) => res.json({
-  time: new Date().toLocaleString(),
-  env: process.env.NODE_ENV || "development",
-  port: process.env.PORT || 3000
-}));
+app.get("/status", (req, res) =>
+  res.json({
+    time: new Date().toLocaleString(),
+    env: process.env.NODE_ENV || "development",
+    port: process.env.PORT || 3000,
+  })
+);
 app.get("/logs", (req, res) => {
-  const coloredHtmlLines = logger.logs.map(line => ansiToHtml.toHtml(line));
+  const coloredHtmlLines = logger.logs.map((line) => ansiToHtml.toHtml(line));
   res.json(coloredHtmlLines);
 });
 
 app.use("/notifications", notificationsRoute);
 app.use("/api/main", mainRoute);
 app.use("/api/user", userRoute);
-app.use("/api/topup-options", TopupRoute)
-app.use('/api/wallet', walletRoute);
-app.use('/api/transactions', transactionRoute);
-app.use('/api/boost-plans', boostPlanRoute);
-app.use('/api/order', orderRoute)
+app.use("/api/topup-options", TopupRoute);
+app.use("/api/wallet", walletRoute);
+app.use("/api/transactions", transactionRoute);
+app.use("/api/boost-plans", boostPlanRoute);
+app.use("/api/order", orderRoute);
 // Serve uploaded files statically if needed:
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
+
+// After API routes, before 404 JSON:
+app.use((req, res) => {
+  if (req.originalUrl.startsWith("/api")) {
+    // 🚨 Any unknown /api/* route → 404 JSON
+    logger.warn(`API route not found: ${req.method} ${req.originalUrl}`);
+    return res.status(404).json({ error: "API route not found" });
+  }
+
+  // 🌐 Otherwise → serve SPA index.html
+  logger.warn(`Redirected to Public Index: ${req.method} ${req.originalUrl}`);
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
+});
 
 // Handle unknown routes
 app.use((req, res) => {
@@ -81,7 +97,7 @@ await loadCacheMeta(); // before app.listen()
 //   logger.log(`Server running at http://0.0.0.0:${PORT}`);
 // });
 
-import http from "http"
+import http from "http";
 
 const server = http.createServer(app);
 
