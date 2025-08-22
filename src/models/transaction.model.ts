@@ -4,6 +4,14 @@ const prisma = new PrismaClient();
 
 import { TransactionStatus, TransactionType } from "@prisma/client";
 
+// 🔹 Get all transactions
+export async function getAllTransactions() {
+  const result = await prisma.transaction.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  if (!result) return null;
+  return { success: true, data: result };
+}
 // 🔹 Get all transactions of a user
 export async function getAllTransactionsByUserId(userId: string) {
   const result = await prisma.transaction.findMany({
@@ -12,11 +20,12 @@ export async function getAllTransactionsByUserId(userId: string) {
   });
   if (!result) return null;
   return { success: true, data: result };
-
 }
-
 // 🔹 Get all transactions by type (for a user)
-export async function getTransactionsByType(userId: string, type: TransactionType) {
+export async function getTransactionsByType(
+  userId: string,
+  type: TransactionType
+) {
   return prisma.transaction.findMany({
     where: {
       userId,
@@ -25,9 +34,11 @@ export async function getTransactionsByType(userId: string, type: TransactionTyp
     orderBy: { createdAt: "desc" },
   });
 }
-
 // 🔹 Get all transactions by status (for a user)
-export async function getTransactionsByStatus(userId: string, status: TransactionStatus) {
+export async function getTransactionsByStatus(
+  userId: string,
+  status: TransactionStatus
+) {
   return prisma.transaction.findMany({
     where: {
       userId,
@@ -36,7 +47,6 @@ export async function getTransactionsByStatus(userId: string, status: Transactio
     orderBy: { createdAt: "desc" },
   });
 }
-
 // 🔹 Get all transactions with optional filters
 export async function getFilteredTransactions(
   userId: string,
