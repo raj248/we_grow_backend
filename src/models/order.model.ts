@@ -1,5 +1,5 @@
 import { BoostPlan, Order, PrismaClient } from "@prisma/client";
-import { fetchVideoDetailsYoutube } from "utils/fetchVideoDetails.js";
+import { fetchVideoDetailsYoutube } from "../utils/fetchVideoDetails.js";
 const prisma = new PrismaClient();
 
 type RawOrderWithBoostPlan = Order & {
