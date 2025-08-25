@@ -1,4 +1,5 @@
 import { BoostPlan, Order, PrismaClient } from "@prisma/client";
+import { fetchVideoDetailsYoutube } from "utils/fetchVideoDetails.js";
 const prisma = new PrismaClient();
 
 type RawOrderWithBoostPlan = Order & {
@@ -153,9 +154,10 @@ export async function checkAndCompleteOrder(orderId: string) {
   const requiredViews = order.boostPlan.views;
 
   if (order.completedCount >= requiredViews && order.status !== "COMPLETED") {
+    const { viewCount } = await fetchVideoDetailsYoutube(order.url);
     await prisma.order.update({
       where: { id: orderId },
-      data: { status: "COMPLETED" },
+      data: { status: "COMPLETED", completedViewCount: viewCount },
     });
   }
 }
