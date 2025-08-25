@@ -87,6 +87,8 @@ export const boostPlanController = {
 
       const result = await boostPlanModel.update(id, updates);
       if (result.success) {
+        setLastUpdated(cacheKeys.planList());
+        setLastUpdated(cacheKeys.planInfo(id));
         res.json({ success: true, data: result.data });
       } else {
         res.status(500).json({ success: false, error: result.error });
@@ -131,6 +133,24 @@ export const boostPlanController = {
       const err = error as Error;
       logger.error(`boostPlanController.activate: ${err.message}`);
       res.status(500).json({ success: false, error: "Error activating plan." });
+    }
+  },
+  async delete(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const result = await boostPlanModel.delete(id);
+
+      if (result.success) {
+        setLastUpdated(cacheKeys.planList());
+        setLastUpdated(cacheKeys.planInfo(id));
+        res.json({ success: true, data: result.data });
+      } else {
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      const err = error as Error;
+      logger.error(`boostPlanController.delete: ${err.message}`);
+      res.status(500).json({ success: false, error: "Error deleting plan." });
     }
   },
 };

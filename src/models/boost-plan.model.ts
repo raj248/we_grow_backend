@@ -91,6 +91,16 @@ export const boostPlanModel = {
     }
   },
 
+  async delete(id: string) {
+    try {
+      const item = await prisma.boostPlan.delete({ where: { id } });
+      return { success: true, data: item };
+    } catch (error) {
+      console.error("[boostPlanModel.delete]", error);
+      return { success: false, error: "Failed to delete boost plan." };
+    }
+  },
+
   async upsert(plan: {
     id: string;
     title: string;
