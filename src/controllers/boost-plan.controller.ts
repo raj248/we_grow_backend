@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { boostPlanModel } from "../models/boost-plan.model.js";
 import { logger } from "../utils/log.js";
-import { setLastUpdated } from "utils/cacheManager.js";
-import { cacheKeys } from "utils/cacheKeys.js";
+import { setLastUpdated } from "../utils/cacheManager.js";
+import { cacheKeys } from "../utils/cacheKeys.js";
 
 export const boostPlanController = {
   async list(req: Request, res: Response) {
