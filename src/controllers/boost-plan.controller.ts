@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { boostPlanModel } from "../models/boost-plan.model.js";
 import { logger } from "../utils/log.js";
+import { setLastUpdated } from "utils/cacheManager.js";
+import { cacheKeys } from "utils/cacheKeys.js";
 
 export const boostPlanController = {
   async list(req: Request, res: Response) {
@@ -43,13 +45,13 @@ export const boostPlanController = {
         title,
         description,
         price,
-        type,
+        duration,
+        reward,
         views = 0,
-        likes = 0,
         isActive = true,
       } = req.body;
 
-      if (!title || !type || !price) {
+      if (!title || !price) {
         return res
           .status(400)
           .json({ success: false, error: "Missing required fields." });
@@ -60,11 +62,13 @@ export const boostPlanController = {
         description,
         price,
         views,
-        likes,
+        duration,
+        reward,
         isActive,
       });
 
       if (result.success) {
+        setLastUpdated(cacheKeys.planList());
         res.status(201).json({ success: true, data: result.data });
       } else {
         res.status(500).json({ success: false, error: result.error });

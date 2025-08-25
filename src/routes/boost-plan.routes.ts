@@ -19,7 +19,7 @@ router.get(
 router.post("/", boostPlanController.create);
 
 // PATCH update a plan by ID
-router.patch("/:id", boostPlanController.update);
+router.put("/:id", boostPlanController.update);
 
 // PATCH deactivate a plan by ID
 router.patch("/deactivate/:id", boostPlanController.deactivate);

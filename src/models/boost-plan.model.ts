@@ -28,8 +28,9 @@ export const boostPlanModel = {
     title: string;
     description?: string;
     price: number;
-    views?: number;
-    likes?: number;
+    views: number;
+    duration: number;
+    reward: number;
     isActive?: boolean;
   }) {
     try {
