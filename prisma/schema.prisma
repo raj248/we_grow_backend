@@ -61,6 +61,7 @@ model BoostPlan {
   title       String
   description String?
   price       Int
+  salePrice   Int?
   views       Int      @default(0)
   duration    Int      @default(0)
   reward      Int      @default(5)

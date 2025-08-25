@@ -28,6 +28,7 @@ export const boostPlanModel = {
     title: string;
     description?: string;
     price: number;
+    salePrice?: number;
     views: number;
     duration: number;
     reward: number;
@@ -48,8 +49,10 @@ export const boostPlanModel = {
       title: string;
       description: string;
       price: number;
+      salePrice?: number;
+      duration: number;
+      reward: number;
       views: number;
-      likes: number;
       isActive: boolean;
     }>
   ) {
@@ -104,10 +107,12 @@ export const boostPlanModel = {
   async upsert(plan: {
     id: string;
     title: string;
-    description?: string;
+    description: string;
     price: number;
-    views?: number;
-    likes?: number;
+    salePrice?: number;
+    duration: number;
+    reward: number;
+    views: number;
     isActive?: boolean;
   }) {
     try {
