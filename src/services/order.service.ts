@@ -8,6 +8,7 @@ import { checkAndCompleteOrder, orderModel } from "../models/order.model.js";
 import { boostPlanModel } from "../models/boost-plan.model.js";
 import { WalletModel } from "../models/wallet.model.js";
 import { watchHistoryModel } from "models/watchHistory.model.js";
+import { fetchVideoDetailsYoutube } from "utils/fetchVideoDetails.js";
 
 export const makeOrder = async (
   userId: string,
@@ -29,6 +30,9 @@ export const makeOrder = async (
   // Generate order ID
   const orderId = `order_${userId}_${Date.now()}`;
 
+  const { likeCount, viewCount, videoThumbnail, videoTitle } =
+    await fetchVideoDetailsYoutube(link);
+
   // Create order and transaction atomically
   const [order, updatedWallet, transaction] =
     await orderModel.createOrderWithTransaction(
@@ -36,6 +40,7 @@ export const makeOrder = async (
       userId,
       planId,
       link,
+      Number(viewCount),
       plan.data.price
     );
 
