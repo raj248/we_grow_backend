@@ -14,28 +14,28 @@ async function main() {
       googleProductId: "coins_100",
       originalPrice: 100,
       salePrice: 90,
-      currencey: "INR",
+      currency: "INR",
     },
     {
       coins: 250,
       googleProductId: "coins_250",
       originalPrice: 100,
       salePrice: 90,
-      currencey: "INR",
+      currency: "INR",
     },
     {
       coins: 500,
       googleProductId: "coins_500",
       originalPrice: 100,
       salePrice: 90,
-      currencey: "INR",
+      currency: "INR",
     },
     {
       coins: 1000,
       googleProductId: "coins_1000",
       originalPrice: 100,
       salePrice: 90,
-      currencey: "INR",
+      currency: "INR",
     },
   ];
 
@@ -47,14 +47,14 @@ async function main() {
         googleProductId: option.googleProductId,
         originalPrice: option.originalPrice,
         salePrice: option.salePrice,
-        currency: option.currencey,
+        currency: option.currency,
       },
       create: {
         coins: option.coins,
         googleProductId: option.googleProductId,
         originalPrice: option.originalPrice,
         salePrice: option.salePrice,
-        currency: option.currencey,
+        currency: option.currency,
       },
     });
   }
