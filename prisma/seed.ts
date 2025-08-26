@@ -9,19 +9,52 @@ async function main() {
   await seedBoostPlans();
   // 1. TopupOptions
   const TopupOptions = [
-    { coins: 100, googleProductId: "coins_100" },
-    { coins: 250, googleProductId: "coins_250" },
-    { coins: 500, googleProductId: "coins_500" },
-    { coins: 1000, googleProductId: "coins_1000" },
+    {
+      coins: 100,
+      googleProductId: "coins_100",
+      originalPrice: 100,
+      salePrice: 90,
+      currencey: "INR",
+    },
+    {
+      coins: 250,
+      googleProductId: "coins_250",
+      originalPrice: 100,
+      salePrice: 90,
+      currencey: "INR",
+    },
+    {
+      coins: 500,
+      googleProductId: "coins_500",
+      originalPrice: 100,
+      salePrice: 90,
+      currencey: "INR",
+    },
+    {
+      coins: 1000,
+      googleProductId: "coins_1000",
+      originalPrice: 100,
+      salePrice: 90,
+      currencey: "INR",
+    },
   ];
 
   for (const option of TopupOptions) {
     await prisma.topupOptions.upsert({
       where: { googleProductId: option.googleProductId },
-      update: {},
+      update: {
+        coins: option.coins,
+        googleProductId: option.googleProductId,
+        originalPrice: option.originalPrice,
+        salePrice: option.salePrice,
+        currency: option.currencey,
+      },
       create: {
         coins: option.coins,
         googleProductId: option.googleProductId,
+        originalPrice: option.originalPrice,
+        salePrice: option.salePrice,
+        currency: option.currencey,
       },
     });
   }
