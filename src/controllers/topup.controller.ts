@@ -6,7 +6,7 @@ import { cacheKeys } from "../utils/cacheKeys.js";
 import {
   consumeProduct,
   verifyAndroidPurchase,
-} from "services/validate.service.js";
+} from "../services/validate.service.js";
 import { PrismaClient } from "@prisma/client";
 import { androidpublisher_v3 } from "googleapis";
 const prisma = new PrismaClient();
