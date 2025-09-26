@@ -1,22 +1,22 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import { Request, Response } from "express";
-import { cacheKeys } from '../utils/cacheKeys.js';
-import { setLastUpdated } from '../utils/cacheManager.js';
+import { cacheKeys } from "../utils/cacheKeys.js";
+import { setLastUpdated } from "../utils/cacheManager.js";
 
 export const topupCoins = async (req: Request, res: Response) => {
   try {
-    const { userId, purchaseToken, productId } = req.body;
+    const { userId, purchaseToken, id } = req.body;
 
     // Simulate fake purchase validation
-    if (!purchaseToken || !productId) {
+    if (!purchaseToken || !id) {
       return res.status(400).json({ message: "Invalid purchase data" });
     }
 
     // Check purchase option
     const option = await prisma.topupOptions.findUnique({
-      where: { googleProductId: productId },
+      where: { id: id },
     });
 
     if (!option) {
@@ -31,7 +31,11 @@ export const topupCoins = async (req: Request, res: Response) => {
     });
 
     if (alreadyExists) {
-      return res.status(200).json({ success: false, error: "Already processed", message: "Already processed" });
+      return res.status(200).json({
+        success: false,
+        error: "Already processed",
+        message: "Already processed",
+      });
     }
 
     // Credit coins and log transaction
@@ -53,7 +57,7 @@ export const topupCoins = async (req: Request, res: Response) => {
         },
       }),
     ]);
-    setLastUpdated(cacheKeys.transactionInfo(userId))
+    setLastUpdated(cacheKeys.transactionInfo(userId));
     return res.status(200).json({
       success: true,
       message: "Purchase successful",
