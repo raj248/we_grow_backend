@@ -11,81 +11,240 @@ import { PrismaClient } from "@prisma/client";
 import { androidpublisher_v3 } from "googleapis";
 const prisma = new PrismaClient();
 
-type Receipt = {
-  productId: string;
-  purchaseToken: string | null | undefined;
-  transactionId: string | null | undefined;
-  packageNameAndroid: string | null | undefined;
-};
+import { Mutex } from "async-mutex";
+
+const transactionMutexes = new Map<string, Mutex>();
+
 export const TopupController = {
   async validateReceipt(req: Request, res: Response) {
     const { productId, purchaseToken, transactionId, packageNameAndroid } =
       req.body;
-    if (!productId) {
+    logger.log({
+      "Request Body": {
+        productId,
+        purchaseToken,
+        transactionId,
+        packageNameAndroid,
+      },
+    });
+    if (!productId)
       return res
         .status(400)
         .json({ success: false, message: "Missing productId" });
-    }
-
-    if (!purchaseToken && !transactionId) {
+    if (!purchaseToken && !transactionId)
       return res.status(400).json({
         success: false,
         message: "Missing purchaseToken or transactionId",
       });
+
+    const transactionKey = transactionId || purchaseToken;
+
+    // Get or create a mutex for this transaction
+    let mutex = transactionMutexes.get(transactionKey);
+    if (!mutex) {
+      mutex = new Mutex();
+      transactionMutexes.set(transactionKey, mutex);
+    } else {
+      logger.log(
+        `Request is being processed: ${transactionKey} mutex locked: ${mutex.isLocked()}`
+      );
     }
 
-    try {
-      let verificationResult: androidpublisher_v3.Schema$ProductPurchase;
-      if (purchaseToken && packageNameAndroid) {
-        // Assume Android purchase
-        verificationResult = await verifyAndroidPurchase(
-          packageNameAndroid,
-          productId,
-          purchaseToken
-        );
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: "Insufficient data for verification",
-        });
-      }
+    return mutex.runExclusive(async () => {
+      try {
+        let verificationResult: androidpublisher_v3.Schema$ProductPurchase;
+        if (purchaseToken && packageNameAndroid) {
+          verificationResult = await verifyAndroidPurchase(
+            packageNameAndroid,
+            productId,
+            purchaseToken
+          );
+        } else {
+          return res.status(400).json({
+            success: false,
+            message: "Insufficient data for verification",
+          });
+        }
 
-      if (verificationResult.purchaseState === 0) {
-        // Here, you would typically:
-        // 1. Check if the purchase has already been consumed/granted to prevent replay attacks.
-        // 2. Grant the user the purchased coins/items.
-        // 3. Record the purchase in your database.
-        // 4. Acknowledge the purchase with the store (Google Play/App Store).
-        // const transaction = await prisma.transaction.findUnique({
-        //     where: { transactionId },
-        // });
+        if (verificationResult.purchaseState === Number(1)) {
+          // return purchase cancelled by user
+          return res.status(400).json({
+            success: false,
+            message: "Purchase cancelled by user",
+          });
+        } else if (verificationResult.purchaseState === Number(2)) {
+          // save as a pending transaction
+          await prisma.transaction.upsert({
+            where: { transactionId: transactionKey },
+            update: { status: "PENDING" },
+            create: {
+              userId: req.body.userId,
+              amount: 0, // Amount will be updated upon successful purchase
+              type: "CREDIT",
+              source: "Google Play Purchase",
+              status: "PENDING",
+              transactionId: transactionKey,
+            },
+          });
+          setLastUpdated(cacheKeys.transactionInfo(req.body.userId));
+          // return purchase pending
+          return res.status(200).json({
+            success: false,
+            message: "Purchase pending",
+          });
+        } else if (verificationResult.purchaseState !== 0) {
+          // save as failed transaction
+          await prisma.transaction.upsert({
+            where: { transactionId: transactionKey },
+            update: { status: "FAILED" },
+            create: {
+              userId: req.body.userId,
+              amount: 0,
+              type: "CREDIT",
+              source: "Google Play Purchase",
+              status: "FAILED",
+              transactionId: transactionKey,
+            },
+          });
+          setLastUpdated(cacheKeys.transactionInfo(req.body.userId));
+          return res.status(400).json({
+            success: false,
+            message: "Purchase verification failed",
+          });
+        }
+
+        // Check if transaction already exists
+        let existingTransaction = await prisma.transaction.findUnique({
+          where: { transactionId: transactionKey },
+        });
+
+        // If not found and a transactionId exists, check for pending row with purchaseToken
+        if (!existingTransaction && transactionId && purchaseToken) {
+          existingTransaction = await prisma.transaction.findUnique({
+            where: { transactionId: purchaseToken },
+          });
+
+          if (existingTransaction) {
+            // Update the row with the real transactionId and mark as SUCCESS
+            await prisma.transaction.update({
+              where: { transactionId: purchaseToken },
+              data: {
+                transactionId: transactionId, // switch to real ID
+              },
+            });
+          }
+        }
+
+        if (existingTransaction?.status === "SUCCESS") {
+          logger.log("Transaction already exists and verified.");
+          return res.status(200).json({
+            success: true,
+            message: "Purchase already verified and coins granted.",
+            data: verificationResult,
+          });
+        }
+
+        // check for consumed state and return already verified
+        if (verificationResult.consumptionState !== 0 && existingTransaction) {
+          logger.log(
+            `Transaction exists with ${existingTransaction.status}  not yet consumed`
+          );
+
+          return res.status(200).json({
+            success: true,
+            message: "Purchase already verified and coins granted.",
+            data: verificationResult,
+          });
+        }
+
+        // Grant coins to the user
+        const topupOption = await TopupModel.getById(productId);
+        if (!topupOption.success || !topupOption.data) {
+          return res.status(404).json({
+            success: false,
+            message: "Topup option not found for the given product ID.",
+          });
+        }
+
+        const coinsToGrant = topupOption.data.coins;
+        const userId = req.body.userId;
+        if (!userId)
+          return res
+            .status(400)
+            .json({ success: false, message: "User ID is required." });
+
+        // check for yet to be consumed state for an existing transaction
+        if (existingTransaction && verificationResult.consumptionState === 0) {
+          // consume product
+          logger.log(`Transaction exists with ${existingTransaction.status}`);
+          consumeProduct(packageNameAndroid, productId, purchaseToken).then(
+            async () => {
+              logger.log("Consumed product successfully.");
+              // update the user wallet and transaction in a prisma.$transaction
+
+              const [updatedWallet, transactionRecord] =
+                await prisma.$transaction([
+                  prisma.wallet.update({
+                    where: { userId },
+                    data: { balance: { increment: coinsToGrant } },
+                  }),
+                  prisma.transaction.update({
+                    where: { transactionId: transactionKey },
+                    data: {
+                      amount: coinsToGrant,
+                      status: "SUCCESS",
+                    },
+                  }),
+                ]);
+              setLastUpdated(cacheKeys.wallet(userId));
+              setLastUpdated(cacheKeys.transactionInfo(userId));
+            }
+          );
+          return res.status(200).json({
+            success: true,
+            message: "Purchase verified and coins granted.",
+            data: verificationResult,
+          });
+        }
+
+        const [updatedWallet, transactionRecord] = await prisma.$transaction([
+          prisma.wallet.update({
+            where: { userId },
+            data: { balance: { increment: coinsToGrant } },
+          }),
+          prisma.transaction.create({
+            data: {
+              userId,
+              amount: coinsToGrant,
+              type: "CREDIT",
+              source: "Google Play Purchase",
+              status: "SUCCESS",
+              transactionId: transactionKey,
+            },
+          }),
+        ]);
+
+        setLastUpdated(cacheKeys.wallet(userId));
+        setLastUpdated(cacheKeys.transactionInfo(userId));
+
         await consumeProduct(packageNameAndroid, productId, purchaseToken);
 
-        // For now, just return the verification success
         return res.status(200).json({
           success: true,
           message: "Purchase verified successfully",
           data: verificationResult,
         });
-      } else {
-        return res.status(400).json({
-          success: false,
-          message:
-            verificationResult.developerPayload ||
-            "Purchase verification failed",
-          error: verificationResult.developerPayload,
-        });
+      } catch (error) {
+        logger.error(`TopupController.validateReceipt: ${error}`);
+        return res
+          .status(500)
+          .json({ success: false, message: "Internal server error" });
       }
-    } catch (error) {
-      logger.error(`TopupController.validateReceipt: ${error}`);
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
-    }
+    });
   },
   async create(req: Request, res: Response) {
-    const { coins, googleProductId } = req.body;
-    const result = await TopupModel.create({ coins, googleProductId });
+    const { id, coins, googleProductId } = req.body;
+    const result = await TopupModel.create({ id, coins, googleProductId });
 
     if (result.success) {
       setLastUpdated(cacheKeys.TopupOptionList());

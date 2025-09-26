@@ -11,50 +11,43 @@ async function main() {
   const TopupOptions = [
     {
       coins: 100,
-      googleProductId: "coins_100",
+      googleProductId: "coin_10",
       originalPrice: 100,
-      salePrice: 90,
-      currency: "INR",
+    },
+    {
+      coins: 100,
+      googleProductId: "coin_100",
+      originalPrice: 100,
     },
     {
       coins: 250,
-      googleProductId: "coins_250",
+      googleProductId: "coin_250",
       originalPrice: 100,
-      salePrice: 90,
-      currency: "INR",
     },
     {
       coins: 500,
-      googleProductId: "coins_500",
+      googleProductId: "coin_500",
       originalPrice: 100,
-      salePrice: 90,
-      currency: "INR",
     },
     {
       coins: 1000,
-      googleProductId: "coins_1000",
+      googleProductId: "coin_1000",
       originalPrice: 100,
-      salePrice: 90,
-      currency: "INR",
     },
   ];
 
   for (const option of TopupOptions) {
     await prisma.topupOptions.upsert({
-      where: { googleProductId: option.googleProductId },
+      where: { id: option.googleProductId },
       update: {
         coins: option.coins,
-        googleProductId: option.googleProductId,
+        id: option.googleProductId,
         originalPrice: option.originalPrice,
-        salePrice: option.salePrice,
-        currency: option.currency,
       },
       create: {
         coins: option.coins,
-        googleProductId: option.googleProductId,
+        id: option.googleProductId,
         originalPrice: option.originalPrice,
-        salePrice: option.salePrice,
-        currency: option.currency,
       },
     });
   }

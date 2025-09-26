@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-import { logger } from '../utils/log.js';
+import { logger } from "../utils/log.js";
 
 export const TopupModel = {
-  async create(data: { coins: number; googleProductId: string }) {
+  async create(data: { id: string; coins: number; googleProductId: string }) {
     try {
       const option = await prisma.topupOptions.create({
         data,
@@ -12,7 +12,7 @@ export const TopupModel = {
       return { success: true, data: option };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to create purchase option.' };
+      return { success: false, error: "Failed to create purchase option." };
     }
   },
 
@@ -20,12 +20,12 @@ export const TopupModel = {
     try {
       const options = await prisma.topupOptions.findMany({
         where: activeOnly ? { isActive: true } : {},
-        orderBy: { coins: 'asc' },
+        orderBy: { coins: "asc" },
       });
       return { success: true, data: options };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to fetch purchase options.' };
+      return { success: false, error: "Failed to fetch purchase options." };
     }
   },
 
@@ -36,10 +36,10 @@ export const TopupModel = {
       });
       return option
         ? { success: true, data: option }
-        : { success: false, error: 'Purchase option not found.' };
+        : { success: false, error: "Purchase option not found." };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to fetch purchase option.' };
+      return { success: false, error: "Failed to fetch purchase option." };
     }
   },
 
@@ -55,7 +55,7 @@ export const TopupModel = {
       return { success: true, data: updated };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to update purchase option.' };
+      return { success: false, error: "Failed to update purchase option." };
     }
   },
 
@@ -67,7 +67,7 @@ export const TopupModel = {
       return { success: true, data: deleted };
     } catch (error) {
       logger.error(error);
-      return { success: false, error: 'Failed to delete purchase option.' };
+      return { success: false, error: "Failed to delete purchase option." };
     }
   },
 };

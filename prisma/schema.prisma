@@ -48,12 +48,9 @@ model Transaction {
 }
 
 model TopupOptions {
-  id              String   @id @default(cuid())
+  id String   @id @unique
   coins           Int
-  googleProductId String   @unique
   originalPrice   Float?   // for display purposes (USD or your base currency)
-  salePrice       Float?   // optional discounted display price
-  currency        String?  // ISO code (e.g., "USD"), useful for consistency
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
