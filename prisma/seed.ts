@@ -10,9 +10,9 @@ async function main() {
   // 1. TopupOptions
   const TopupOptions = [
     {
-      coins: 100,
+      coins: 10,
       googleProductId: "coin_10",
-      originalPrice: 100,
+      originalPrice: 10,
     },
     {
       coins: 100,
@@ -22,17 +22,17 @@ async function main() {
     {
       coins: 250,
       googleProductId: "coin_250",
-      originalPrice: 100,
+      originalPrice: 250,
     },
     {
       coins: 500,
       googleProductId: "coin_500",
-      originalPrice: 100,
+      originalPrice: 500,
     },
     {
       coins: 1000,
       googleProductId: "coin_1000",
-      originalPrice: 100,
+      originalPrice: 1000,
     },
   ];
 
