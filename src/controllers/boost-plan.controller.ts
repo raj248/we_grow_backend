@@ -48,6 +48,8 @@ export const boostPlanController = {
         duration,
         reward,
         views = 0,
+        likes = 0,
+        subscribers = 0,
         isActive = true,
       } = req.body;
 
@@ -59,11 +61,13 @@ export const boostPlanController = {
 
       const result = await boostPlanModel.create({
         title,
-        description,
         price,
-        views,
         duration,
         reward,
+        description,
+        views,
+        likes,
+        subscribers,
         isActive,
       });
 
@@ -85,6 +89,12 @@ export const boostPlanController = {
       const { id } = req.params;
       const updates = req.body;
 
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Missing plan ID." });
+      }
+
       const result = await boostPlanModel.update(id, updates);
       if (result.success) {
         setLastUpdated(cacheKeys.planList());
@@ -103,9 +113,17 @@ export const boostPlanController = {
   async deactivate(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Missing plan ID." });
+      }
+
       const result = await boostPlanModel.deactivate(id);
 
       if (result.success) {
+        setLastUpdated(cacheKeys.planList());
+        setLastUpdated(cacheKeys.planInfo(id));
         res.json({ success: true, data: result.data });
       } else {
         res.status(500).json({ success: false, error: result.error });
@@ -122,9 +140,18 @@ export const boostPlanController = {
   async activate(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Missing plan ID." });
+      }
+
       const result = await boostPlanModel.activate(id);
 
       if (result.success) {
+        setLastUpdated(cacheKeys.planList());
+        setLastUpdated(cacheKeys.planInfo(id));
+
         res.json({ success: true, data: result.data });
       } else {
         res.status(500).json({ success: false, error: result.error });
@@ -138,6 +165,12 @@ export const boostPlanController = {
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Missing plan ID." });
+      }
+
       const result = await boostPlanModel.delete(id);
 
       if (result.success) {

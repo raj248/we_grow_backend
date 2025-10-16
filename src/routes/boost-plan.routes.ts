@@ -29,4 +29,5 @@ router.patch("/activate/:id", boostPlanController.activate);
 
 // DELETE a plan by ID
 router.delete("/:id", boostPlanController.delete);
+
 export default router;

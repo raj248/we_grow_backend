@@ -26,12 +26,16 @@ export const boostPlanModel = {
 
   async create(data: {
     title: string;
-    description?: string;
     price: number;
-    views: number;
     duration: number;
     reward: number;
+
     isActive?: boolean;
+    description?: string;
+
+    views?: number;
+    likes?: number;
+    subscribers?: number;
   }) {
     try {
       const item = await prisma.boostPlan.create({ data });
@@ -46,15 +50,23 @@ export const boostPlanModel = {
     id: string,
     data: Partial<{
       title: string;
-      description: string;
       price: number;
       duration: number;
       reward: number;
+      description: string;
       views: number;
+      likes: number;
+      subscribers: number;
       isActive: boolean;
     }>
   ) {
     try {
+      // check if id exist before attempting update
+      const existingPlan = await prisma.boostPlan.findUnique({ where: { id } });
+      if (!existingPlan) {
+        return { success: false, error: "Boost plan not found." };
+      }
+
       const item = await prisma.boostPlan.update({
         where: { id },
         data,
@@ -68,6 +80,10 @@ export const boostPlanModel = {
 
   async deactivate(id: string) {
     try {
+      const existingPlan = await prisma.boostPlan.findUnique({ where: { id } });
+      if (!existingPlan) {
+        return { success: false, error: "Boost plan not found." };
+      }
       const item = await prisma.boostPlan.update({
         where: { id },
         data: { isActive: false },
@@ -81,6 +97,10 @@ export const boostPlanModel = {
 
   async activate(id: string) {
     try {
+      const existingPlan = await prisma.boostPlan.findUnique({ where: { id } });
+      if (!existingPlan) {
+        return { success: false, error: "Boost plan not found." };
+      }
       const item = await prisma.boostPlan.update({
         where: { id },
         data: { isActive: true },
@@ -94,34 +114,16 @@ export const boostPlanModel = {
 
   async delete(id: string) {
     try {
+      const existingPlan = await prisma.boostPlan.findUnique({ where: { id } });
+      if (!existingPlan) {
+        return { success: false, error: "Boost plan not found." };
+      }
+
       const item = await prisma.boostPlan.delete({ where: { id } });
       return { success: true, data: item };
     } catch (error) {
       console.error("[boostPlanModel.delete]", error);
       return { success: false, error: "Failed to delete boost plan." };
-    }
-  },
-
-  async upsert(plan: {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
-    duration: number;
-    reward: number;
-    views: number;
-    isActive?: boolean;
-  }) {
-    try {
-      const item = await prisma.boostPlan.upsert({
-        where: { id: plan.id },
-        update: plan,
-        create: plan,
-      });
-      return { success: true, data: item };
-    } catch (error) {
-      console.error("[boostPlanModel.upsert]", error);
-      return { success: false, error: "Failed to upsert boost plan." };
     }
   },
 

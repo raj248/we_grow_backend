@@ -9,6 +9,8 @@ type RawOrderWithBoostPlan = Order & {
   boostPlan_description?: string;
   boostPlan_price: number;
   boostPlan_views: number;
+  boostPlan_likes: number;
+  boostPlan_subscribers: number;
   boostPlan_duration: number;
   boostPlan_reward: number;
   boostPlan_isActive: boolean;
@@ -67,6 +69,8 @@ export const orderModel = {
             b.description AS boostPlan_description,
             b.price AS boostPlan_price,
             b.views AS boostPlan_views,
+            b.likes AS boostPlan_likes,
+            b.subscribers AS boostPlan_subscribers,
             b.duration AS boostPlan_duration,
             b.reward AS boostPlan_reward,
             b.isActive AS boostPlan_isActive,
@@ -95,6 +99,8 @@ export const orderModel = {
       description: randomOrder.boostPlan_description,
       price: randomOrder.boostPlan_price,
       views: randomOrder.boostPlan_views,
+      likes: randomOrder.boostPlan_likes,
+      subscribers: randomOrder.boostPlan_subscribers,
       duration: randomOrder.boostPlan_duration,
       reward: randomOrder.boostPlan_reward,
       isActive: randomOrder.boostPlan_isActive,
