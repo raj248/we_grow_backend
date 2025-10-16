@@ -28,7 +28,6 @@ export const boostPlanModel = {
     title: string;
     description?: string;
     price: number;
-    salePrice?: number;
     views: number;
     duration: number;
     reward: number;
@@ -49,7 +48,6 @@ export const boostPlanModel = {
       title: string;
       description: string;
       price: number;
-      salePrice?: number;
       duration: number;
       reward: number;
       views: number;
@@ -109,7 +107,6 @@ export const boostPlanModel = {
     title: string;
     description: string;
     price: number;
-    salePrice?: number;
     duration: number;
     reward: number;
     views: number;
