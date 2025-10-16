@@ -79,6 +79,7 @@ export const orderModel = {
       FROM \`Order\` o
       JOIN \`BoostPlan\` b ON o.planId = b.id
       WHERE o.userId != ${userId}
+        And b.views != 0
         AND o.status = 'ACTIVE'
         AND NOT EXISTS (
           SELECT 1 
