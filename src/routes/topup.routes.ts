@@ -25,7 +25,7 @@ router.post("/validate-receipt", TopupController.validateReceipt);
 router.post("/", TopupController.create);
 
 // PATCH /api/topup-options/:id - update a specific purchase option
-router.patch("/:id", TopupController.update);
+router.put("/:id", TopupController.update);
 
 // DELETE /api/topup-options/:id - delete a specific purchase option
 router.delete("/:id", TopupController.delete);

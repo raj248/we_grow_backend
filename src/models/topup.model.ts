@@ -4,8 +4,30 @@ const prisma = new PrismaClient();
 import { logger } from "../utils/log.js";
 
 export const TopupModel = {
-  async create(data: { id: string; coins: number; googleProductId: string }) {
+  async create(data: {
+    id: string;
+    coins: number;
+    originalPrice: number;
+    isActive?: boolean;
+  }) {
     try {
+      if (!data.id) {
+        return {
+          success: false,
+          error: "ID is required to create a topup option.",
+        };
+      }
+      // Check if a topup option with the given ID already exists
+      const existingOption = await prisma.topupOptions.findUnique({
+        where: { id: data.id },
+      });
+      if (existingOption) {
+        return {
+          success: false,
+          error: "A topup option with this ID already exists.",
+        };
+      }
+
       const option = await prisma.topupOptions.create({
         data,
       });
@@ -45,9 +67,23 @@ export const TopupModel = {
 
   async updateById(
     id: string,
-    data: Partial<{ coins: number; googleProductId: string; isActive: boolean }>
+    data: Partial<{ coins: number; originalPrice: number; isActive: boolean }>
   ) {
     try {
+      if (!id) {
+        return {
+          success: false,
+          error: "ID is required to update a topup option.",
+        };
+      }
+      // Check if the purchase option exists
+      const existingOption = await prisma.topupOptions.findUnique({
+        where: { id },
+      });
+      if (!existingOption) {
+        return { success: false, error: "Purchase option not found." };
+      }
+
       const updated = await prisma.topupOptions.update({
         where: { id },
         data,

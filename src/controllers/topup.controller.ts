@@ -243,8 +243,14 @@ export const TopupController = {
     });
   },
   async create(req: Request, res: Response) {
-    const { id, coins, googleProductId } = req.body;
-    const result = await TopupModel.create({ id, coins, googleProductId });
+    const { id, coins, originalPrice, isActive } = req.body;
+    console.log(id, coins, originalPrice, isActive);
+    const result = await TopupModel.create({
+      id,
+      coins,
+      originalPrice,
+      isActive,
+    });
 
     if (result.success) {
       setLastUpdated(cacheKeys.TopupOptionList());
@@ -256,7 +262,8 @@ export const TopupController = {
   },
 
   async getAll(req: Request, res: Response) {
-    const result = await TopupModel.getAll();
+    const activeOnly = req.query.active === "false";
+    const result = await TopupModel.getAll(activeOnly);
 
     if (result.success) {
       return res.status(200).json(result);
@@ -280,11 +287,11 @@ export const TopupController = {
 
   async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { coins, googleProductId, isActive } = req.body;
+    const { coins, isActive, originalPrice } = req.body;
 
     const result = await TopupModel.updateById(id, {
       coins,
-      googleProductId,
+      originalPrice,
       isActive,
     });
 
