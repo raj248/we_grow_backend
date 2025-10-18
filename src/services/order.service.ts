@@ -105,6 +105,16 @@ export async function processEarning(token: string, duration: number) {
       };
     }
 
+    const o = await orderModel.getById(orderId);
+    if (!o) {
+      return {
+        success: false,
+        statusCode: 404,
+        message: "Order not found",
+      };
+    }
+    const REWARD_AMOUNT = o.boostPlan.reward;
+
     // Update user wallet
     const [wallet, transaction, history, order] =
       await WalletModel.rewardWithTransaction(
