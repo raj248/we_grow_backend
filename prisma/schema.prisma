@@ -77,8 +77,15 @@ model Order {
   userId         String
   planId         String
   url            String
+  
   viewCount      Int            @default(0)
+  likeCount      Int            @default(0)
+  subscriberCount      Int            @default(0)
+  
   completedViewCount      Int            @default(0)
+  completedLikeCount      Int            @default(0)
+  completedSubscriberCount      Int            @default(0)
+  
   completedCount Int            @default(0)
   status         OrderStatus    @default(PENDING)
   createdAt      DateTime       @default(now())

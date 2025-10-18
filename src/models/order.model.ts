@@ -1,5 +1,5 @@
 import { BoostPlan, Order, PrismaClient } from "@prisma/client";
-import { fetchVideoDetailsYoutube } from "../utils/fetchVideoDetails.js";
+import { fetchYouTubeDetails } from "../utils/fetchVideoDetails.js";
 const prisma = new PrismaClient();
 
 type RawOrderWithBoostPlan = Order & {
@@ -24,8 +24,10 @@ export const orderModel = {
     userId: string,
     planId: string,
     link: string,
-    viewCount: number,
-    planPrice: number
+    planPrice: number,
+    viewCount?: number,
+    likeCount?: number,
+    subscriberCount?: number
   ) {
     return prisma.$transaction([
       prisma.order.create({
@@ -34,7 +36,11 @@ export const orderModel = {
           userId,
           planId,
           url: link,
-          viewCount,
+          viewCount: Number.isFinite(viewCount) ? viewCount : 0,
+          likeCount: Number.isFinite(likeCount) ? likeCount : 0,
+          subscriberCount: Number.isFinite(subscriberCount)
+            ? subscriberCount
+            : 0,
           status: "ACTIVE",
         },
       }),
@@ -158,10 +164,17 @@ export async function checkAndCompleteOrder(orderId: string) {
   const requiredViews = order.boostPlan.views;
 
   if (order.completedCount >= requiredViews && order.status !== "COMPLETED") {
-    const { viewCount } = await fetchVideoDetailsYoutube(order.url);
+    const { viewCount, likeCount, subscriberCount } = await fetchYouTubeDetails(
+      order.url
+    );
     await prisma.order.update({
       where: { id: orderId },
-      data: { status: "COMPLETED", completedViewCount: viewCount },
+      data: {
+        status: "COMPLETED",
+        completedViewCount: Number(viewCount) ?? 0,
+        completedLikeCount: Number(likeCount) ?? 0,
+        completedSubscriberCount: Number(subscriberCount) ?? 0,
+      },
     });
   }
 }

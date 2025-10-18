@@ -7,7 +7,7 @@ import { verifyEarningToken } from "../utils/earnToken.js";
 import { checkAndCompleteOrder, orderModel } from "../models/order.model.js";
 import { boostPlanModel } from "../models/boost-plan.model.js";
 import { WalletModel } from "../models/wallet.model.js";
-import { fetchVideoDetailsYoutube } from "../utils/fetchVideoDetails.js";
+import { fetchYouTubeDetails } from "../utils/fetchVideoDetails.js";
 
 export const makeOrder = async (
   userId: string,
@@ -29,8 +29,26 @@ export const makeOrder = async (
   // Generate order ID
   const orderId = `order_${userId}_${Date.now()}`;
 
-  const { likeCount, viewCount, videoThumbnail, videoTitle } =
-    await fetchVideoDetailsYoutube(link);
+  const { likeCount, viewCount, thumbnail, title, subscriberCount } =
+    await fetchYouTubeDetails(link);
+
+  console.log(
+    likeCount,
+    viewCount,
+    thumbnail,
+    title,
+    subscriberCount,
+    plan.data
+  );
+  // check if title and thumbnail is not undefined else reject say try again later
+  if (!title || !thumbnail) {
+    return {
+      success: false,
+      statusCode: 400,
+      message:
+        "Could not fetch video details. Please check the URL or try again later.",
+    };
+  }
 
   // Create order and transaction atomically
   const [order, updatedWallet, transaction] =
@@ -39,8 +57,10 @@ export const makeOrder = async (
       userId,
       planId,
       link,
+      plan.data.price,
       Number(viewCount),
-      plan.data.price
+      Number(likeCount),
+      Number(subscriberCount)
     );
 
   // Update cache timestamps
