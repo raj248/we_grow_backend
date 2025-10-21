@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -33,7 +33,7 @@ export const WalletModel = {
       data: {
         balance: { increment: amount },
       },
-    })
+    });
   },
 
   async decrementBalance(userId: string, amount: number) {
@@ -45,7 +45,12 @@ export const WalletModel = {
     });
   },
 
-  async rewardWithTransaction(userId: string, orderId: string, amount: number, tId: string) {
+  async rewardWithTransaction(
+    userId: string,
+    orderId: string,
+    amount: number,
+    tId: string
+  ) {
     return prisma.$transaction([
       prisma.wallet.update({
         where: { userId },
@@ -69,7 +74,7 @@ export const WalletModel = {
       prisma.order.update({
         where: { id: orderId },
         data: {
-          completedCount: { increment: 1 },
+          progressViewCount: { increment: 1 },
         },
       }),
     ]);

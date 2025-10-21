@@ -1,4 +1,4 @@
-import { BoostPlan, Order, PrismaClient } from "@prisma/client";
+import { BoostPlan, Order, OrderStatus, PrismaClient } from "@prisma/client";
 import { fetchYouTubeDetails } from "../utils/fetchVideoDetails.js";
 const prisma = new PrismaClient();
 
@@ -36,9 +36,9 @@ export const orderModel = {
           userId,
           planId,
           url: link,
-          viewCount: Number.isFinite(viewCount) ? viewCount : 0,
-          likeCount: Number.isFinite(likeCount) ? likeCount : 0,
-          subscriberCount: Number.isFinite(subscriberCount)
+          initialViewCount: Number.isFinite(viewCount) ? viewCount : 0,
+          initialLikeCount: Number.isFinite(likeCount) ? likeCount : 0,
+          initialSubscriberCount: Number.isFinite(subscriberCount)
             ? subscriberCount
             : 0,
           status: "ACTIVE",
@@ -149,6 +149,88 @@ export const orderModel = {
       },
     });
   },
+
+  // delete order
+  async deleteOrder(id: string) {
+    const existingOrder = await prisma.order.findUnique({
+      where: { id },
+    });
+    if (!existingOrder) {
+      return { success: false, error: "Order not found." };
+    }
+
+    const deletedOrder = await prisma.order.delete({
+      where: { id },
+    });
+    return { success: true, data: deletedOrder };
+  },
+
+  async updateOrderStatus(orderId: string, status: OrderStatus) {
+    // reject if order doesn't exist
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+    });
+    if (!existingOrder) {
+      return { success: false, error: "Order not found." };
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { status },
+    });
+    return { success: true, data: updatedOrder };
+  },
+
+  async updateOrderProgressViewCount(orderId: string) {
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+    });
+    if (!existingOrder) {
+      return { success: false, error: "Order not found." };
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        progressViewCount: { increment: 1 },
+      },
+    });
+    return { success: true, data: updatedOrder };
+  },
+
+  async updateOrderProgressLikeCount(orderId: string) {
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+    });
+    if (!existingOrder) {
+      return { success: false, error: "Order not found." };
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        progressLikeCount: { increment: 1 },
+      },
+    });
+    return { success: true, data: updatedOrder };
+  },
+
+  async updateOrderProgressSubscriberCount(orderId: string) {
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+    });
+    if (!existingOrder) {
+      return { success: false, error: "Order not found." };
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        progressSubscriberCount: { increment: 1 },
+      },
+    });
+    return { success: true, data: updatedOrder };
+  },
 };
 
 export async function checkAndCompleteOrder(orderId: string) {
@@ -171,9 +253,9 @@ export async function checkAndCompleteOrder(orderId: string) {
       where: { id: orderId },
       data: {
         status: "COMPLETED",
-        completedViewCount: Number(viewCount) ?? 0,
-        completedLikeCount: Number(likeCount) ?? 0,
-        completedSubscriberCount: Number(subscriberCount) ?? 0,
+        finalViewCount: Number(viewCount) ?? 0,
+        finalLikeCount: Number(likeCount) ?? 0,
+        finalSubscriberCount: Number(subscriberCount) ?? 0,
       },
     });
   }

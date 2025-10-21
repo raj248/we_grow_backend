@@ -70,6 +70,143 @@ export const orderController = {
       return res.status(500).json({ message: "Internal server error" });
     }
   },
+  async updateOrderStatus(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Order ID is required" });
+      }
+
+      if (!status) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Status is required" });
+      }
+
+      const result = await orderModel.updateOrderStatus(id, status);
+
+      if (!result.success) {
+        return res.status(404).json({ success: false, message: result.error });
+      }
+
+      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderList());
+      return res.status(200).json({ success: true, data: result.data });
+    } catch (error) {
+      console.error("[updateOrderStatus]", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  async updateOrderProgressViewCount(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Order ID is required" });
+      }
+
+      const result = await orderModel.updateOrderProgressViewCount(id);
+
+      if (!result.success) {
+        return res.status(404).json({ success: false, message: result.error });
+      }
+
+      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderList());
+      return res.status(200).json({ success: true, data: result.data });
+    } catch (error) {
+      console.error("[updateOrderProgressViewCount]", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  async updateOrderProgressLikeCount(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Order ID is required" });
+      }
+
+      const result = await orderModel.updateOrderProgressLikeCount(id);
+
+      if (!result.success) {
+        return res.status(404).json({ success: false, message: result.error });
+      }
+
+      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderList());
+      return res.status(200).json({ success: true, data: result.data });
+    } catch (error) {
+      console.error("[updateOrderProgressLikeCount]", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  async updateOrderProgressSubscriberCount(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Order ID is required" });
+      }
+
+      const result = await orderModel.updateOrderProgressSubscriberCount(id);
+
+      if (!result.success) {
+        return res.status(404).json({ success: false, message: result.error });
+      }
+
+      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderList());
+      return res.status(200).json({ success: true, data: result.data });
+    } catch (error) {
+      console.error("[updateOrderProgressSubscriberCount]", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  async deleteOrder(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Order ID is required" });
+      }
+
+      const result = await orderModel.deleteOrder(id);
+
+      if (!result.success) {
+        return res.status(404).json({ success: false, message: result.error });
+      }
+
+      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderList());
+      return res.status(200).json({ success: true, data: result.data });
+    } catch (error) {
+      console.error("[deleteOrder]", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  },
+
   async getRandomVideo(req: Request, res: Response) {
     try {
       const { userId } = req.params; // or req.user?.id if using auth middleware

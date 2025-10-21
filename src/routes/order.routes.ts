@@ -16,6 +16,21 @@ router.get(
 );
 router.post("/", orderController.makeOrder);
 
+router.patch("/status/:id", orderController.updateOrderStatus);
+router.patch(
+  "/progress/view/:id",
+  orderController.updateOrderProgressViewCount
+);
+router.patch(
+  "/progress/like/:id",
+  orderController.updateOrderProgressLikeCount
+);
+router.patch(
+  "/progress/subscriber/:id",
+  orderController.updateOrderProgressSubscriberCount
+);
+router.delete("/:id", orderController.deleteOrder);
+
 router.get("/earn/:userId", orderController.getRandomVideo);
 router.post("/reward", orderController.getReward);
 

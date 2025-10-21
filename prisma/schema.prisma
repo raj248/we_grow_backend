@@ -73,25 +73,34 @@ model BoostPlan {
 }
 
 model Order {
-  id             String         @id @default(cuid())
+  id             String      @id @default(cuid())
   userId         String
   planId         String
   url            String
-  
-  viewCount      Int            @default(0)
-  likeCount      Int            @default(0)
-  subscriberCount      Int            @default(0)
-  
-  completedViewCount      Int            @default(0)
-  completedLikeCount      Int            @default(0)
-  completedSubscriberCount      Int            @default(0)
-  
-  completedCount Int            @default(0)
-  status         OrderStatus    @default(PENDING)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  boostPlan      BoostPlan      @relation(fields: [planId], references: [id], onDelete: Cascade)
-  user           User           @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  // ----- Initial video stats (captured at order creation) -----
+  initialViewCount       Int  @default(0)
+  initialLikeCount       Int  @default(0)
+  initialSubscriberCount Int  @default(0)
+
+  // ----- Final video stats (captured when order completes) -----
+  finalViewCount         Int  @default(0)
+  finalLikeCount         Int  @default(0)
+  finalSubscriberCount   Int  @default(0)
+
+  // ----- Progress stats (incremental, updated as order progresses) -----
+  progressViewCount      Int  @default(0)
+  progressLikeCount      Int  @default(0)
+  progressSubscriberCount Int @default(0)
+
+  completedCount Int       @default(0)
+  status         OrderStatus @default(PENDING)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  // ----- Relations -----
+  boostPlan      BoostPlan   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  user           User        @relation(fields: [userId], references: [userId], onDelete: Cascade)
   watchHistory   WatchHistory[]
 
   @@index([userId])
