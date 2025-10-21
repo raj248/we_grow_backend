@@ -111,8 +111,12 @@ export const orderController = {
           .status(400)
           .json({ success: false, message: "Order ID is required" });
       }
+      const { progressViewCount } = req.body;
 
-      const result = await orderModel.updateOrderProgressViewCount(id);
+      const result = await orderModel.updateOrderProgressViewCount(
+        id,
+        progressViewCount
+      );
 
       if (!result.success) {
         return res.status(404).json({ success: false, message: result.error });
@@ -137,8 +141,12 @@ export const orderController = {
           .status(400)
           .json({ success: false, message: "Order ID is required" });
       }
+      const { progressLikeCount } = req.body;
 
-      const result = await orderModel.updateOrderProgressLikeCount(id);
+      const result = await orderModel.updateOrderProgressLikeCount(
+        id,
+        progressLikeCount
+      );
 
       if (!result.success) {
         return res.status(404).json({ success: false, message: result.error });
@@ -163,8 +171,12 @@ export const orderController = {
           .status(400)
           .json({ success: false, message: "Order ID is required" });
       }
+      const { progressSubscriberCount } = req.body;
 
-      const result = await orderModel.updateOrderProgressSubscriberCount(id);
+      const result = await orderModel.updateOrderProgressSubscriberCount(
+        id,
+        progressSubscriberCount
+      );
 
       if (!result.success) {
         return res.status(404).json({ success: false, message: result.error });

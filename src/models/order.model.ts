@@ -181,7 +181,10 @@ export const orderModel = {
     return { success: true, data: updatedOrder };
   },
 
-  async updateOrderProgressViewCount(orderId: string) {
+  async updateOrderProgressViewCount(
+    orderId: string,
+    progressViewCount: number
+  ) {
     const existingOrder = await prisma.order.findUnique({
       where: { id: orderId },
     });
@@ -192,13 +195,16 @@ export const orderModel = {
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
-        progressViewCount: { increment: 1 },
+        progressViewCount: { increment: progressViewCount },
       },
     });
     return { success: true, data: updatedOrder };
   },
 
-  async updateOrderProgressLikeCount(orderId: string) {
+  async updateOrderProgressLikeCount(
+    orderId: string,
+    progressLikeCount: number
+  ) {
     const existingOrder = await prisma.order.findUnique({
       where: { id: orderId },
     });
@@ -209,13 +215,16 @@ export const orderModel = {
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
-        progressLikeCount: { increment: 1 },
+        progressLikeCount: { increment: progressLikeCount },
       },
     });
     return { success: true, data: updatedOrder };
   },
 
-  async updateOrderProgressSubscriberCount(orderId: string) {
+  async updateOrderProgressSubscriberCount(
+    orderId: string,
+    progressSubscriberCount: number
+  ) {
     const existingOrder = await prisma.order.findUnique({
       where: { id: orderId },
     });
@@ -226,7 +235,7 @@ export const orderModel = {
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
-        progressSubscriberCount: { increment: 1 },
+        progressSubscriberCount: { increment: progressSubscriberCount },
       },
     });
     return { success: true, data: updatedOrder };
