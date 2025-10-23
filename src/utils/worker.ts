@@ -43,6 +43,7 @@ export async function orderStatsWorker(manual = false) {
 
     for (const order of orders) {
       const videoId = extractVideoId(order.url);
+      console.log("videoId", videoId);
       const channelIdOrHandle = extractChannelIdOrHandle(order.url);
 
       if (videoId) videoOrders.push(order);

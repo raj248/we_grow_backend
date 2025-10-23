@@ -219,6 +219,7 @@ export async function fetchVideoStats(videoIds: string[]) {
       )}&key=${API_KEY}`
     );
     const json = await res.json();
+    console.log(json);
     json.items?.forEach((item: any) => {
       results[item.id] = {
         viewCount: Number(item.statistics.viewCount ?? 0),
