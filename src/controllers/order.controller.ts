@@ -92,7 +92,7 @@ export const orderController = {
         return res.status(404).json({ success: false, message: result.error });
       }
 
-      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderInfo(result.data.userId));
       setLastUpdated(cacheKeys.orderList());
       return res.status(200).json({ success: true, data: result.data });
     } catch (error) {
@@ -122,7 +122,7 @@ export const orderController = {
         return res.status(404).json({ success: false, message: result.error });
       }
 
-      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderInfo(result.data.userId));
       setLastUpdated(cacheKeys.orderList());
       return res.status(200).json({ success: true, data: result.data });
     } catch (error) {
@@ -152,7 +152,7 @@ export const orderController = {
         return res.status(404).json({ success: false, message: result.error });
       }
 
-      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderInfo(result.data.userId));
       setLastUpdated(cacheKeys.orderList());
       return res.status(200).json({ success: true, data: result.data });
     } catch (error) {
@@ -182,7 +182,7 @@ export const orderController = {
         return res.status(404).json({ success: false, message: result.error });
       }
 
-      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderInfo(result.data.userId));
       setLastUpdated(cacheKeys.orderList());
       return res.status(200).json({ success: true, data: result.data });
     } catch (error) {
@@ -208,7 +208,7 @@ export const orderController = {
         return res.status(404).json({ success: false, message: result.error });
       }
 
-      setLastUpdated(cacheKeys.orderInfo(id));
+      setLastUpdated(cacheKeys.orderInfo(result.data.userId));
       setLastUpdated(cacheKeys.orderList());
       return res.status(200).json({ success: true, data: result.data });
     } catch (error) {

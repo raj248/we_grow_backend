@@ -1,4 +1,4 @@
-async function fetchWithRetry(
+export async function fetchWithRetry(
   url: string,
   options?: RequestInit,
   retries = 3,
@@ -167,53 +167,83 @@ export const fetchYouTubeDetails = async (url: string) => {
   }
 };
 
-// export const fetchVideoDetailsYoutube = async (url: string) => {
-//   if (!url?.includes("youtube.com") && !url?.includes("youtu.be")) {
-//     return {
-//       videoTitle: "Invalid YouTube URL",
-//       videoThumbnail: "https://via.placeholder.com/320x180?text=Invalid+URL",
-//       viewCount: null,
-//       likeCount: null,
-//       subscriberCount: null,
-//     };
-//   }
+// Extract video ID from a URL
+export function extractVideoId(url: string): string | null {
+  const match = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return match?.[1] ?? null;
+}
 
-//   try {
-//     // First, fetch oEmbed for title and thumbnail
-//     const oembedRes = await fetch(
-//       `https://www.youtube.com/oembed?url=${encodeURIComponent(
-//         url
-//       )}&format=json`
-//     );
-//     if (!oembedRes.ok) throw new Error("oEmbed fetch failed");
-//     const oembed = await oembedRes.json();
+// Extract channel ID or username/handle
+export function extractChannelIdOrHandle(url: string): string | null {
+  const channelMatch = url.match(/\/channel\/([A-Za-z0-9_-]+)/);
+  const handleMatch = url.match(/\/@([A-Za-z0-9_-]+)/);
+  const userMatch = url.match(/\/user\/([A-Za-z0-9_-]+)/);
+  const cMatch = url.match(/\/c\/([A-Za-z0-9_-]+)/);
+  return (
+    channelMatch?.[1] ??
+    handleMatch?.[1] ??
+    userMatch?.[1] ??
+    cMatch?.[1] ??
+    null
+  );
+}
 
-//     // Extract video ID from URL
-//     const videoIdMatch = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-//     const videoId = videoIdMatch?.[1];
-//     if (!videoId) throw new Error("Can’t parse video ID");
+// Batch fetch video stats
+export async function fetchVideoStats(videoIds: string[]) {
+  const chunks: string[][] = [];
+  const chunkSize = 50; // max 50 per API call
+  for (let i = 0; i < videoIds.length; i += chunkSize) {
+    chunks.push(videoIds.slice(i, i + chunkSize));
+  }
 
-//     // Fetch statistics
-//     const statsRes = await fetch(
-//       `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${API_KEY}`
-//     );
-//     if (!statsRes.ok) throw new Error("Stats fetch failed");
-//     const statsJson = await statsRes.json();
-//     const stats = statsJson.items?.[0]?.statistics;
+  const results: Record<string, { viewCount: number; likeCount: number }> = {};
 
-//     return {
-//       videoTitle: oembed.title,
-//       videoThumbnail: oembed.thumbnail_url,
-//       viewCount: stats?.viewCount ?? null,
-//       likeCount: stats?.likeCount ?? null,
-//     };
-//   } catch (error) {
-//     console.error(error);
-//     return {
-//       videoTitle: "Error fetching video",
-//       videoThumbnail: "https://via.placeholder.com/320x180?text=Error",
-//       viewCount: null,
-//       likeCount: null,
-//     };
-//   }
-// };
+  for (const chunk of chunks) {
+    const res = await fetchWithRetry(
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${chunk.join(
+        ","
+      )}&key=${API_KEY}`
+    );
+    const json = await res.json();
+    json.items?.forEach((item: any) => {
+      results[item.id] = {
+        viewCount: Number(item.statistics.viewCount ?? 0),
+        likeCount: Number(item.statistics.likeCount ?? 0),
+      };
+    });
+  }
+
+  return results;
+}
+
+// Batch fetch channel subscriber stats
+export async function fetchChannelStats(channelIdsOrHandles: string[]) {
+  const results: Record<string, number> = {};
+
+  for (const idOrHandle of channelIdsOrHandles) {
+    let url: string;
+    if (/^[A-Za-z0-9_-]{24,}$/.test(idOrHandle)) {
+      // looks like channel ID
+      url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${idOrHandle}&key=${API_KEY}`;
+    } else {
+      // assume handle or username
+      url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&forUsername=${idOrHandle}&key=${API_KEY}`;
+    }
+
+    try {
+      const res = await fetchWithRetry(url);
+      const json = await res.json();
+      if (json.items?.length) {
+        const stats = json.items[0].statistics;
+        results[idOrHandle] = Number(stats.subscriberCount ?? 0);
+      } else {
+        results[idOrHandle] = 0;
+      }
+    } catch (err) {
+      console.error(`Failed to fetch channel stats for ${idOrHandle}`, err);
+      results[idOrHandle] = 0;
+    }
+  }
+
+  return results;
+}

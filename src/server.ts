@@ -68,6 +68,18 @@ app.use("/api/order", orderRoute);
 // Serve uploaded files statically if needed:
 app.use("/uploads", express.static("uploads"));
 
+app.post("/api/run-worker-now", async (req, res) => {
+  try {
+    logger.log("🔄 Manual trigger: orderStatsWorker() started...");
+    await orderStatsWorker();
+    logger.log("✅ Manual trigger: orderStatsWorker() completed successfully.");
+    res.json({ success: true, message: "Worker executed immediately." });
+  } catch (err) {
+    logger.error(`❌ Manual worker trigger failed: ${err}`);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // After API routes, before 404 JSON:
 app.use((req, res, next) => {
   if (req.url.startsWith("/api")) {
@@ -87,9 +99,13 @@ await loadCacheMeta(); // before app.listen()
 // });
 
 import http from "http";
+import { orderStatsWorker } from "./utils/worker.js";
 
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
   logger.log(`Server running on port ${PORT}`);
 });
+
+// orderStatsWorker();
+setInterval(orderStatsWorker, 30 * 60 * 1000);

@@ -133,7 +133,7 @@ export async function processEarning(token: string, duration: number) {
     await checkAndCompleteOrder(orderId);
 
     setLastUpdated(cacheKeys.wallet(userId));
-    setLastUpdated(cacheKeys.orderInfo(clientId));
+    setLastUpdated(cacheKeys.orderInfo(userId));
     setLastUpdated(cacheKeys.transactionInfo(userId));
 
     return {

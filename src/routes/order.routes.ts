@@ -2,6 +2,7 @@ import express from "express";
 import { orderController } from "../controllers/order.controller.js";
 import { cacheMiddleware } from "../middleware/cacheMiddleware.js";
 import { cacheKeys } from "../utils/cacheKeys.js";
+import { refreshOrderWorker } from "../utils/worker.js";
 
 const router = express.Router();
 
@@ -34,4 +35,13 @@ router.delete("/:id", orderController.deleteOrder);
 router.get("/earn/:userId", orderController.getRandomVideo);
 router.post("/reward", orderController.getReward);
 
+router.post("/refresh-order/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await refreshOrderWorker(id);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 export default router;
