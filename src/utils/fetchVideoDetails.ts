@@ -170,18 +170,17 @@ export const fetchYouTubeDetails = async (url: string) => {
 // Extract video ID from a URL (video, shorts, youtu.be)
 export function extractVideoId(url: string): string | null {
   if (!url) return null;
-  const normalized = url.toLowerCase();
 
   // Shorts
-  const shortsMatch = normalized.match(/\/shorts\/([A-Za-z0-9_-]{11})/);
+  const shortsMatch = url.match(/\/shorts\/([A-Za-z0-9_-]{11})/);
   if (shortsMatch) return shortsMatch[1];
 
   // Regular watch?v=
-  const watchMatch = normalized.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  const watchMatch = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
   if (watchMatch) return watchMatch[1];
 
   // Shortened youtu.be link
-  const shortMatch = normalized.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  const shortMatch = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
   if (shortMatch) return shortMatch[1];
 
   return null;
