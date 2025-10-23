@@ -68,8 +68,8 @@ export async function orderStatsWorker() {
         // mark completed if required views met
         if (
           order.boostPlan &&
-          order.initialViewCount - stats.viewCount >= order.boostPlan.views &&
-          order.initialLikeCount - stats.likeCount >= order.boostPlan.likes
+          stats.viewCount - order.initialViewCount >= order.boostPlan.views &&
+          stats.likeCount - order.initialLikeCount >= order.boostPlan.likes
         ) {
           updatedData.status = OrderStatus.COMPLETED;
           updatedData.finalViewCount = stats.viewCount;
@@ -105,7 +105,7 @@ export async function orderStatsWorker() {
         // mark completed if required subscribers met
         if (
           order.boostPlan &&
-          order.initialSubscriberCount - subs >= order.boostPlan.subscribers
+          subs - order.initialSubscriberCount >= order.boostPlan.subscribers
         ) {
           updatedData.status = OrderStatus.COMPLETED;
           updatedData.finalSubscriberCount = subs;
@@ -128,10 +128,6 @@ export async function orderStatsWorker() {
     isProcessing = false;
   }
 }
-
-// Poll every 30 minutes
-// setInterval(orderStatsWorker, 30 * 60 * 1000);
-// orderStatsWorker();
 
 export async function refreshOrderWorker(orderId) {
   console.log(`🔄 Refreshing single order ${orderId}...`);
@@ -177,8 +173,8 @@ export async function refreshOrderWorker(orderId) {
       // mark completed if required views met
       if (
         order.boostPlan &&
-        order.initialViewCount - stats.viewCount >= order.boostPlan.views &&
-        order.initialLikeCount - stats.likeCount >= order.boostPlan.likes
+        stats.viewCount - order.initialViewCount >= order.boostPlan.views &&
+        stats.likeCount - order.initialLikeCount >= order.boostPlan.likes
       ) {
         updatedData.status = OrderStatus.COMPLETED;
         updatedData.finalViewCount = stats.viewCount;
@@ -197,7 +193,7 @@ export async function refreshOrderWorker(orderId) {
 
       if (
         order.boostPlan &&
-        order.initialSubscriberCount - subs >= order.boostPlan.subscribers
+        subs - order.initialSubscriberCount >= order.boostPlan.subscribers
       ) {
         updatedData.status = OrderStatus.COMPLETED;
         updatedData.finalSubscriberCount = subs;
