@@ -65,13 +65,6 @@ export async function orderStatsWorker(manual = false) {
           updatedAt: new Date(),
         };
 
-        console.log(order);
-        console.log(
-          stats.viewCount,
-          order.boostPlan.views,
-          stats.likeCount,
-          order.boostPlan.likes
-        );
         // mark completed if required views met
         if (
           order.boostPlan &&
