@@ -188,17 +188,25 @@ export function extractVideoId(url: string): string | null {
 
 // Extract channel ID or username/handle
 export function extractChannelIdOrHandle(url: string): string | null {
+  if (!url) return null;
+
+  // Channel ID
   const channelMatch = url.match(/\/channel\/([A-Za-z0-9_-]+)/);
+  if (channelMatch) return channelMatch[1];
+
+  // Handle (@handle)
   const handleMatch = url.match(/\/@([A-Za-z0-9_-]+)/);
+  if (handleMatch) return `@${handleMatch[1]}`;
+
+  // Legacy username
   const userMatch = url.match(/\/user\/([A-Za-z0-9_-]+)/);
+  if (userMatch) return userMatch[1];
+
+  // Custom URL / c/...
   const cMatch = url.match(/\/c\/([A-Za-z0-9_-]+)/);
-  return (
-    channelMatch?.[1] ??
-    handleMatch?.[1] ??
-    userMatch?.[1] ??
-    cMatch?.[1] ??
-    null
-  );
+  if (cMatch) return cMatch[1];
+
+  return null;
 }
 
 // Batch fetch video stats
@@ -218,7 +226,6 @@ export async function fetchVideoStats(videoIds: string[]) {
       )}&key=${API_KEY}`
     );
     const json = await res.json();
-    console.log(json);
     json.items?.forEach((item: any) => {
       results[item.id] = {
         viewCount: Number(item.statistics.viewCount ?? 0),
@@ -236,20 +243,26 @@ export async function fetchChannelStats(channelIdsOrHandles: string[]) {
 
   for (const idOrHandle of channelIdsOrHandles) {
     let url: string;
+
     if (/^[A-Za-z0-9_-]{24,}$/.test(idOrHandle)) {
-      // looks like channel ID
+      // Looks like channel ID
       url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${idOrHandle}&key=${API_KEY}`;
+    } else if (idOrHandle.startsWith("@")) {
+      // It's a handle
+      url = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&forHandle=${idOrHandle}&key=${API_KEY}`;
     } else {
-      // assume handle or username
-      url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&forUsername=${idOrHandle}&key=${API_KEY}`;
+      // Assume old username
+      url = `https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&forUsername=${idOrHandle}&key=${API_KEY}`;
     }
 
     try {
       const res = await fetchWithRetry(url);
       const json = await res.json();
+
       if (json.items?.length) {
-        const stats = json.items[0].statistics;
-        results[idOrHandle] = Number(stats.subscriberCount ?? 0);
+        results[idOrHandle] = Number(
+          json.items[0].statistics.subscriberCount ?? 0
+        );
       } else {
         results[idOrHandle] = 0;
       }

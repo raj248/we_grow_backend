@@ -109,3 +109,18 @@ server.listen(PORT, () => {
 
 // orderStatsWorker();
 setInterval(orderStatsWorker, 30 * 60 * 1000);
+
+// import {
+//   extractChannelIdOrHandle,
+//   fetchChannelStats,
+//   fetchYouTubeDetails,
+// } from "utils/fetchVideoDetails.js";
+
+// fetchChannelStats([
+//   extractChannelIdOrHandle("https://www.youtube.com/@Code_Insane"),
+// ]).then(console.log);
+
+// // fetchYouTubeDetails("https://www.youtube.com/@Code_Insane").then(console.log);
+// //
+
+// console.log(extractChannelIdOrHandle("https://www.youtube.com/@Code_Insane"));
