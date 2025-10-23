@@ -71,7 +71,7 @@ app.use("/uploads", express.static("uploads"));
 app.post("/api/run-worker-now", async (req, res) => {
   try {
     logger.log("🔄 Manual trigger: orderStatsWorker() started...");
-    await orderStatsWorker();
+    await orderStatsWorker(true);
     logger.log("✅ Manual trigger: orderStatsWorker() completed successfully.");
     res.json({ success: true, message: "Worker executed immediately." });
   } catch (err) {

@@ -11,7 +11,7 @@ import { cacheKeys } from "./cacheKeys.js";
 const prisma = new PrismaClient();
 let isProcessing = false;
 
-export async function orderStatsWorker() {
+export async function orderStatsWorker(manual = false) {
   console.log("Starting order stats worker...");
   if (isProcessing) return;
   isProcessing = true;
@@ -23,8 +23,8 @@ export async function orderStatsWorker() {
     const orders = await prisma.order.findMany({
       where: {
         status: "ACTIVE",
-        updatedAt: { lte: twentyHoursAgo },
-        createdAt: { lte: twentyHoursAgo },
+        updatedAt: { lte: manual ? undefined : twentyHoursAgo },
+        createdAt: { lte: manual ? undefined : twentyHoursAgo },
       },
       take: 50, // batch size
       include: { boostPlan: true },
@@ -65,6 +65,13 @@ export async function orderStatsWorker() {
           updatedAt: new Date(),
         };
 
+        console.log(order);
+        console.log(
+          stats.viewCount,
+          order.boostPlan.views,
+          stats.likeCount,
+          order.boostPlan.likes
+        );
         // mark completed if required views met
         if (
           order.boostPlan &&
