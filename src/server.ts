@@ -85,6 +85,18 @@ app.post("/google-play/notifications", async (req, res) => {
     const notification = req.body;
 
     // Google sends a 'subscriptionNotification' or 'oneTimeProductNotification'
+
+    const encodedData = notification.message?.data;
+    if (!encodedData) {
+      console.log("No data field in RTDN");
+      return res.sendStatus(400);
+    }
+
+    // Decode base64
+    const decoded = Buffer.from(encodedData, "base64").toString("utf-8");
+    const data = JSON.parse(decoded);
+    notification.message.data = data;
+
     console.log("Received RTDN:", notification);
 
     // 1️⃣ Handle consumable refund
