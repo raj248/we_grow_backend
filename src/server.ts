@@ -171,3 +171,14 @@ setInterval(orderStatsWorker, 30 * 60 * 1000);
 // //
 
 // console.log(extractChannelIdOrHandle("https://www.youtube.com/@Code_Insane"));
+
+// curl -X POST https://ytapp.zenextech.in/google-play/notifications \
+//   -H "Content-Type: application/json" \
+//   -d '{
+//     "message": {
+//       "data": "ewp2ZXJzaW9uOiAnMS4wJywKcGFja2FnZU5hbWU6ICdjb20ueW91cmVhY2hib29zdGVyLnRlY2guemVuZXgnLApldmVudFRpbWVNaWxsaXM6ICcxNzYxMzA5NzA2MDkwJywKdm9pZGVkUHVyY2hhc2VOb3RpZmljYXRpb246IHsKcHVyY2hhc2VUb2tlbjogJ25lZ2hhaGtmcGVocGZmZnBlb25vYmdncC5BTy1KMU96UlpiN01YYlFyaFNESjJjZ1drNmhOU3dxUVlleHR2TFpQeUNiTmZxMWRKNXBmMnJnZlpNTHM5UzZ3Z2dEa3MxTWhjeDV3OWVteENpZndHaTl0ZWhxU0IxUU82Mi13dWpraVVkRGdzVnNQUUhqRjZBMCcsCm9yZGVySWQ6ICdHUEEuMzM0My01OTQzLTk2NTEtMTQyMTEnLApwcm9kdWN0VHlwZTogMiwKcmVmdW5kVHlwZTogMQp9Cn0K",
+//       "messageId": "16820381691724025",
+//       "publishTime": "2025-10-24T12:41:46.294Z"
+//     },
+//     "subscription": "projects/googple-play-console-developer/subscriptions/you-reach-booster-sub"
+//   }'

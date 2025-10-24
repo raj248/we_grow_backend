@@ -150,7 +150,7 @@ export const UserModel = {
           },
         }),
         prisma.transaction.update({
-          where: { id: orderId },
+          where: { transactionId: orderId },
           data: {
             status: "REFUNDED",
           },
