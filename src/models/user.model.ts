@@ -113,4 +113,50 @@ export const UserModel = {
       return { success: false, error: "Failed to count active users." };
     }
   },
+
+  async refundUser(orderId: string) {
+    try {
+      const transaction = await prisma.transaction.findUnique({
+        where: { id: orderId },
+      });
+
+      if (!transaction) {
+        return { success: false, error: "Transaction not found." };
+      }
+
+      if (transaction.status === "REFUNDED") {
+        return { success: false, error: "Transaction already refunded." };
+      }
+
+      const topupOption = await prisma.topupOptions.findUnique({
+        where: { id: transaction.topUpId },
+      });
+
+      if (!topupOption) {
+        return { success: false, error: "Top-up option not found." };
+      }
+
+      const refundAmount = topupOption.coins; // Assuming refund is the full price of the boost plan
+
+      await prisma.$transaction([
+        prisma.wallet.update({
+          where: { userId: transaction.userId },
+          data: {
+            balance: { decrement: refundAmount },
+          },
+        }),
+        prisma.transaction.update({
+          where: { id: orderId },
+          data: {
+            status: "REFUNDED",
+          },
+        }),
+      ]);
+
+      return { success: true, message: "User refunded successfully." };
+    } catch (error) {
+      logger.error(`UserModel.refundUser: ${error}`);
+      return { success: false, error: "Failed to refund user." };
+    }
+  },
 };

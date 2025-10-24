@@ -35,6 +35,8 @@ import boostPlanRoute from "./routes/boost-plan.routes.js";
 import orderRoute from "./routes/order.routes.js";
 import { format } from "date-fns";
 
+import { UserModel } from "./models/user.model.js";
+
 app.use(logResponseBody);
 
 app.get("/health", (req, res) => {
@@ -98,27 +100,18 @@ app.post("/google-play/notifications", async (req, res) => {
     data.oneTimeProductNotification = JSON.stringify(
       data.oneTimeProductNotification
     );
+
     notification.message.data = data;
 
     console.log("Received RTDN:", notification);
 
-    // 1️⃣ Handle consumable refund
-    if (notification?.oneTimeProductNotification) {
-      const productNotification = notification.oneTimeProductNotification;
+    if (notification?.message?.data.voidedPurchaseNotification) {
+      const productNotification =
+        notification?.message?.data.voidedPurchaseNotification;
 
-      const purchaseToken = productNotification.purchaseToken;
-      const productId = productNotification.productId;
-
-      // Lookup the order in your DB using purchaseToken
-      // const order = await findOrderByPurchaseToken(purchaseToken);
-
-      // if (order && order.status !== "REFUNDED") {
-      //   // Deduct coins
-      //   await deductCoins(order.userId, order.coinsAmount);
-
-      //   // Mark order as refunded
-      //   await markOrderRefunded(order.id);
-      // }
+      const orderId = productNotification.orderId;
+      const refund = await UserModel.refundUser(orderId);
+      console.log("REFUND: ", refund);
     }
 
     res.status(200).send("ok");

@@ -84,6 +84,7 @@ export const TopupController = {
               source: "Google Play Purchase",
               status: "PENDING",
               transactionId: transactionKey,
+              topUpId: productId,
             },
           });
           setLastUpdated(cacheKeys.transactionInfo(req.body.userId));
@@ -104,6 +105,7 @@ export const TopupController = {
               source: "Google Play Purchase",
               status: "FAILED",
               transactionId: transactionKey,
+              topUpId: productId,
             },
           });
           setLastUpdated(cacheKeys.transactionInfo(req.body.userId));
@@ -130,6 +132,7 @@ export const TopupController = {
               where: { transactionId: purchaseToken },
               data: {
                 transactionId: transactionId, // switch to real ID
+                topUpId: productId,
               },
             });
           }
@@ -193,6 +196,7 @@ export const TopupController = {
                     data: {
                       amount: coinsToGrant,
                       status: "SUCCESS",
+                      topUpId: productId,
                     },
                   }),
                 ]);
@@ -220,6 +224,7 @@ export const TopupController = {
               source: "Google Play Purchase",
               status: "SUCCESS",
               transactionId: transactionKey,
+              topUpId: productId,
             },
           }),
         ]);
