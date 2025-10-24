@@ -121,7 +121,7 @@ export const UserModel = {
       }
 
       const transaction = await prisma.transaction.findUnique({
-        where: { id: orderId },
+        where: { transactionId: orderId },
       });
 
       if (!transaction) {
