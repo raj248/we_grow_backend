@@ -116,6 +116,10 @@ export const UserModel = {
 
   async refundUser(orderId: string) {
     try {
+      if (!orderId) {
+        return { success: false, error: "Invalid order ID." };
+      }
+
       const transaction = await prisma.transaction.findUnique({
         where: { id: orderId },
       });
