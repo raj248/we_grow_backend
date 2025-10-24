@@ -101,6 +101,10 @@ app.post("/google-play/notifications", async (req, res) => {
       data.voidedPurchaseNotification ?? {}
     );
 
+    data.oneTimeProductNotification = JSON.stringify(
+      data.oneTimeProductNotification ?? {}
+    );
+
     notification.message.data = data;
 
     console.log("Received RTDN:", notification);
@@ -112,6 +116,7 @@ app.post("/google-play/notifications", async (req, res) => {
       const orderId = productNotification.orderId;
       if (!orderId) {
         res.status(200).send("ok");
+        console.log("No orderId in RTDN");
         return;
       }
       const refund = await UserModel.refundUser(orderId);
