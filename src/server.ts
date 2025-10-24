@@ -97,8 +97,8 @@ app.post("/google-play/notifications", async (req, res) => {
     // Decode base64
     const decoded = Buffer.from(encodedData, "base64").toString("utf-8");
     const data = JSON.parse(decoded);
-    data.oneTimeProductNotification = JSON.stringify(
-      data.oneTimeProductNotification
+    data.voidedPurchaseNotification = JSON.stringify(
+      data.voidedPurchaseNotification ?? {}
     );
 
     notification.message.data = data;
