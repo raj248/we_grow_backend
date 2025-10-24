@@ -176,9 +176,26 @@ setInterval(orderStatsWorker, 30 * 60 * 1000);
 //   -H "Content-Type: application/json" \
 //   -d '{
 //     "message": {
-//       "data": "ewp2ZXJzaW9uOiAnMS4wJywKcGFja2FnZU5hbWU6ICdjb20ueW91cmVhY2hib29zdGVyLnRlY2guemVuZXgnLApldmVudFRpbWVNaWxsaXM6ICcxNzYxMzA5NzA2MDkwJywKdm9pZGVkUHVyY2hhc2VOb3RpZmljYXRpb246IHsKcHVyY2hhc2VUb2tlbjogJ25lZ2hhaGtmcGVocGZmZnBlb25vYmdncC5BTy1KMU96UlpiN01YYlFyaFNESjJjZ1drNmhOU3dxUVlleHR2TFpQeUNiTmZxMWRKNXBmMnJnZlpNTHM5UzZ3Z2dEa3MxTWhjeDV3OWVteENpZndHaTl0ZWhxU0IxUU82Mi13dWpraVVkRGdzVnNQUUhqRjZBMCcsCm9yZGVySWQ6ICdHUEEuMzM0My01OTQzLTk2NTEtMTQyMTEnLApwcm9kdWN0VHlwZTogMiwKcmVmdW5kVHlwZTogMQp9Cn0K",
+//       "data": "eyJ2ZXJzaW9uIjoiMS4wIiwicGFja2FnZU5hbWUiOiJjb20ueW91cmVhY2hib29zdGVyLnRlY2guemVuZXgiLCJldmVudFRpbWVNaWxsaXMiOiIxNzYxMzA5NzA2MDkwIiwidm9pZGVkUHVyY2hhc2VOb3RpZmljYXRpb24iOnsicHVyY2hhc2VUb2tlbiI6Im5lZ2hhaGtmcGVocGZmZnBlb25vYmdncC5BTy1KMU96UlpiN01YYlFyaFNESjJjZ1drNmhOU3dxUVlleHR2TFpQeUNiTmZxMWRKNXBmMnJnZlpNTHM5UzZ3Z2dEa3MxTWhjeDV3OWVteENpZndHaTl0ZWhxU0IxUU82Mi13dWpraVVkRGdzVnNQUUhqRjZBMCIsIm9yZGVySWQiOiJHUEEuMzM0My01OTQzLTk2NTEtMTQyMTEiLCJwcm9kdWN0VHlwZSI6MiwicmVmdW5kVHlwZSI6MX19",
 //       "messageId": "16820381691724025",
 //       "publishTime": "2025-10-24T12:41:46.294Z"
 //     },
 //     "subscription": "projects/googple-play-console-developer/subscriptions/you-reach-booster-sub"
 //   }'
+
+// const a = {
+//   version: "1.0",
+//   packageName: "com.youreachbooster.tech.zenex",
+//   eventTimeMillis: "1761309706090",
+//   voidedPurchaseNotification: {
+//     purchaseToken:
+//       "neghahkfpehpfffpeonobggp.AO-J1OzRZb7MXbQrhSDJ2cgWk6hNSwqQYextvLZPyCbNfq1dJ5pf2rgfZMLs9S6wggDks1Mhcx5w9emxCifwGi9tehqSB1QO62-wujkiUdDgsVsPQHjF6A0",
+//     orderId: "GPA.3343-5943-9651-14211",
+//     productType: 2,
+//     refundType: 1,
+//   },
+// };
+
+// const json = JSON.stringify(a);
+// const encoded = Buffer.from(json).toString("base64");
+// console.log(encoded);
