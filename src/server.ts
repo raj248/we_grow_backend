@@ -117,7 +117,7 @@ setInterval(orderStatsWorker, 30 * 60 * 1000);
 // } from "utils/fetchVideoDetails.js";
 
 // fetchChannelStats([
-//   extractChannelIdOrHandle("https://www.youtube.com/@Code_Insane"),
+//   extractChannelIdOrHandle("https://youtube.com/@code_insane?feature=shared"),
 // ]).then(console.log);
 
 // // fetchYouTubeDetails("https://www.youtube.com/@Code_Insane").then(console.log);
