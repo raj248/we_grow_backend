@@ -97,6 +97,9 @@ app.post("/google-play/notifications", async (req, res) => {
     // Decode base64
     const decoded = Buffer.from(encodedData, "base64").toString("utf-8");
     const data = JSON.parse(decoded);
+
+    notification.message.data = data;
+
     data.voidedPurchaseNotification = JSON.stringify(
       data.voidedPurchaseNotification ?? {}
     );
@@ -105,9 +108,7 @@ app.post("/google-play/notifications", async (req, res) => {
       data.oneTimeProductNotification ?? {}
     );
 
-    notification.message.data = data;
-
-    console.log("Received RTDN:", notification);
+    console.log("Received RTDN:", notification, data);
 
     if (notification?.message?.data.voidedPurchaseNotification) {
       const productNotification =
