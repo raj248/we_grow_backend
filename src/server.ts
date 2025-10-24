@@ -110,7 +110,10 @@ app.post("/google-play/notifications", async (req, res) => {
         notification?.message?.data.voidedPurchaseNotification;
 
       const orderId = productNotification.orderId;
-      if (!orderId) res.status(200).send("ok");
+      if (!orderId) {
+        res.status(200).send("ok");
+        return;
+      }
       const refund = await UserModel.refundUser(orderId);
       console.log("REFUND: ", refund);
     }
