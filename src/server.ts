@@ -100,13 +100,9 @@ app.post("/google-play/notifications", async (req, res) => {
 
     notification.message.data = data;
 
-    data.voidedPurchaseNotification = JSON.stringify(
-      data.voidedPurchaseNotification ?? {}
-    );
+    console.log(JSON.stringify(data.voidedPurchaseNotification ?? {}));
 
-    data.oneTimeProductNotification = JSON.stringify(
-      data.oneTimeProductNotification ?? {}
-    );
+    console.log(JSON.stringify(data.oneTimeProductNotification ?? {}));
 
     console.log("Received RTDN:", notification, data);
 
