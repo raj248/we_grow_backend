@@ -80,6 +80,39 @@ app.post("/api/run-worker-now", async (req, res) => {
   }
 });
 
+app.post("/google-play/notifications", async (req, res) => {
+  try {
+    const notification = req.body;
+
+    // Google sends a 'subscriptionNotification' or 'oneTimeProductNotification'
+    console.log("Received RTDN:", notification);
+
+    // 1️⃣ Handle consumable refund
+    if (notification?.oneTimeProductNotification) {
+      const productNotification = notification.oneTimeProductNotification;
+
+      const purchaseToken = productNotification.purchaseToken;
+      const productId = productNotification.productId;
+
+      // Lookup the order in your DB using purchaseToken
+      // const order = await findOrderByPurchaseToken(purchaseToken);
+
+      // if (order && order.status !== "REFUNDED") {
+      //   // Deduct coins
+      //   await deductCoins(order.userId, order.coinsAmount);
+
+      //   // Mark order as refunded
+      //   await markOrderRefunded(order.id);
+      // }
+    }
+
+    res.status(200).send("ok");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("error");
+  }
+});
+
 // After API routes, before 404 JSON:
 app.use((req, res, next) => {
   if (req.url.startsWith("/api")) {
