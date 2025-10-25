@@ -21,6 +21,9 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
+  // if (!admin || admin.password !== password) {
+  //   return res.status(401).json({ error: "Invalid credentials" });
+  // }
   const token = generateToken(admin.id);
 
   res.setHeader(
