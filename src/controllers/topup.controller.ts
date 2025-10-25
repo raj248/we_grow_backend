@@ -258,7 +258,8 @@ export const TopupController = {
     });
 
     if (result.success) {
-      setLastUpdated(cacheKeys.TopupOptionList());
+      setLastUpdated(cacheKeys.TopupOptionList(true));
+      setLastUpdated(cacheKeys.TopupOptionList(false));
       return res.status(201).json(result);
     } else {
       logger.error(result.error);
@@ -301,7 +302,8 @@ export const TopupController = {
     });
 
     if (result.success) {
-      setLastUpdated(cacheKeys.TopupOptionList());
+      setLastUpdated(cacheKeys.TopupOptionList(true));
+      setLastUpdated(cacheKeys.TopupOptionList(false));
       if (result.data && result.data.id)
         setLastUpdated(cacheKeys.purchaseOptionInfo(result.data.id));
       return res.status(200).json(result);
@@ -316,7 +318,8 @@ export const TopupController = {
     const result = await TopupModel.deleteById(id);
 
     if (result.success) {
-      setLastUpdated(cacheKeys.TopupOptionList());
+      setLastUpdated(cacheKeys.TopupOptionList(true));
+      setLastUpdated(cacheKeys.TopupOptionList(false));
       if (result.data && result.data.id)
         setLastUpdated(cacheKeys.purchaseOptionInfo(result.data.id));
       return res.status(200).json({ message: "Deleted successfully." });
