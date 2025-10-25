@@ -267,7 +267,7 @@ export const TopupController = {
   },
 
   async getAll(req: Request, res: Response) {
-    const activeOnly = req.query.active && req.query.active !== "false";
+    const activeOnly = req.query.active !== "false";
     const result = await TopupModel.getAll(activeOnly);
 
     if (result.success) {

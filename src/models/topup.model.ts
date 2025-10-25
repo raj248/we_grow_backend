@@ -40,6 +40,7 @@ export const TopupModel = {
 
   async getAll(activeOnly = true) {
     try {
+      console.log("activeOnly", activeOnly ? "true" : "false");
       const options = await prisma.topupOptions.findMany({
         where: activeOnly ? { NOT: { isActive: false } } : {},
         orderBy: { coins: "asc" },
