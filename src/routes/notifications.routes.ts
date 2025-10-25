@@ -9,6 +9,6 @@ import { verifyAdmin } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/broadcast", verifyAdmin, broadcastNotification);
-router.get("/broadcast/test", broadcastTestNotification);
+// router.get("/broadcast/test", broadcastTestNotification);
 
 export default router;

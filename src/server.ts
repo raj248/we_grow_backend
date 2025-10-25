@@ -25,7 +25,6 @@ app.use(express.static(path.join(process.cwd(), "public")));
 
 import { logResponseBody } from "./middleware/logResponseBody.js";
 import { loadCacheMeta } from "./utils/cacheManager.js";
-import mainRoute from "./routes/main.routes.js";
 import userRoute from "./routes/user.routes.js";
 import notificationsRoute from "./routes/notifications.routes.js";
 import TopupRoute from "./routes/topup.routes.js";
@@ -61,7 +60,6 @@ app.get("/logs", (req, res) => {
 });
 
 app.use("/notifications", notificationsRoute);
-app.use("/api/main", mainRoute);
 app.use("/api/user", userRoute);
 app.use("/api/topup-options", TopupRoute);
 app.use("/api/wallet", walletRoute);
@@ -72,7 +70,7 @@ app.use("/api/admin", adminAuthRoute);
 // Serve uploaded files statically if needed:
 app.use("/uploads", express.static("uploads"));
 
-app.post("/api/run-worker-now", async (req, res) => {
+app.post("/api/run-worker-now", verifyAdmin, async (req, res) => {
   try {
     logger.log("🔄 Manual trigger: orderStatsWorker() started...");
     await orderStatsWorker(true);
@@ -149,6 +147,7 @@ await loadCacheMeta(); // before app.listen()
 
 import http from "http";
 import { orderStatsWorker } from "./utils/worker.js";
+import { verifyAdmin } from "./middleware/auth.middleware.js";
 
 const server = http.createServer(app);
 

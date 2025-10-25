@@ -2,6 +2,7 @@ import express from "express";
 import { TopupController } from "../controllers/topup.controller.js";
 import { cacheMiddleware } from "../middleware/cacheMiddleware.js";
 import { cacheKeys } from "../utils/cacheKeys.js";
+import { verifyAdmin } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -22,12 +23,12 @@ router.get(
 // POST /api/topup-options/validate-receipt
 router.post("/validate-receipt", TopupController.validateReceipt);
 // POST /api/topup-options - create a new purchase option
-router.post("/", TopupController.create);
+router.post("/", verifyAdmin, TopupController.create);
 
 // PATCH /api/topup-options/:id - update a specific purchase option
-router.put("/:id", TopupController.update);
+router.put("/:id", verifyAdmin, TopupController.update);
 
 // DELETE /api/topup-options/:id - delete a specific purchase option
-router.delete("/:id", TopupController.delete);
+router.delete("/:id", verifyAdmin, TopupController.delete);
 
 export default router;

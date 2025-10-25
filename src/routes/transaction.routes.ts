@@ -2,10 +2,11 @@ import express from "express";
 import * as TransactionController from "../controllers/transaction.controller.js";
 import { cacheMiddleware } from "../middleware/cacheMiddleware.js";
 import { cacheKeys } from "../utils/cacheKeys.js";
+import { verifyAdmin } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 // Get all transactions
-router.get("/", TransactionController.getAllTransactions);
+router.get("/", verifyAdmin, TransactionController.getAllTransactions);
 // All transactions for user (optionally filtered by type/status)
 router.get(
   "/user/:id",
@@ -14,12 +15,12 @@ router.get(
 );
 
 // Filtered by type only
-router.get("/user/:id/type", TransactionController.getUserTransactionsByType);
+// router.get("/user/:id/type", TransactionController.getUserTransactionsByType);
 
 // Filtered by status only
-router.get(
-  "/user/:id/status",
-  TransactionController.getUserTransactionsByStatus
-);
+// router.get(
+//   "/user/:id/status",
+//   TransactionController.getUserTransactionsByStatus
+// );
 
 export default router;
