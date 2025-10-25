@@ -7,10 +7,8 @@ export const verifyAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("I got in");
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.admin_token;
-  console.log("token", token);
   if (!token) {
     // if (process.env.NODE_ENV === "development") {
     //   return next();
