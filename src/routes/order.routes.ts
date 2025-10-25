@@ -2,7 +2,6 @@ import express from "express";
 import { orderController } from "../controllers/order.controller.js";
 import { cacheMiddleware } from "../middleware/cacheMiddleware.js";
 import { cacheKeys } from "../utils/cacheKeys.js";
-import { refreshOrderWorker } from "../utils/worker.js";
 import { verifyAdmin } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
