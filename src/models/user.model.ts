@@ -102,6 +102,7 @@ export const UserModel = {
   async getActiveLast24Hours() {
     try {
       const since = subHours(new Date(), 24);
+      console.log("since", since);
       const count = await prisma.user.count({
         where: {
           lastActiveAt: { gte: since },

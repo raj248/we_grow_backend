@@ -35,6 +35,7 @@ import boostPlanRoute from "./routes/boost-plan.routes.js";
 import orderRoute from "./routes/order.routes.js";
 import { format } from "date-fns";
 
+import adminAuthRoute from "./routes/adminAuth.routes.js";
 import { UserModel } from "./models/user.model.js";
 
 app.use(logResponseBody);
@@ -67,6 +68,7 @@ app.use("/api/wallet", walletRoute);
 app.use("/api/transactions", transactionRoute);
 app.use("/api/boost-plans", boostPlanRoute);
 app.use("/api/order", orderRoute);
+app.use("/api/admin", adminAuthRoute);
 // Serve uploaded files statically if needed:
 app.use("/uploads", express.static("uploads"));
 
