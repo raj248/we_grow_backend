@@ -1,16 +1,16 @@
 // ~/utils/cacheKeys.ts
 export const cacheKeys = {
-  TopupOptionList: () => 'purchaseOption:all:list',
+  TopupOptionList: (active: any) => `purchaseOption:all:list${active}`,
   purchaseOptionInfo: (id: string) => `purchaseOption:${id}:info`,
   // courseByType: (type: string) => `course:type:${type}`,
   transactionInfo: (id: string) => `transaction:${id}:info`,
   wallet: (id: string) => `wallet:${id}:info`,
 
-  orderList: () => 'order:all:list',
+  orderList: () => "order:all:list",
   orderInfo: (id: string) => `order:${id}:info`,
   orderStats: (id: string) => `order:${id}:withStats`,
 
-  planList: () => 'plan:all:list',
+  planList: () => "plan:all:list",
   planInfo: (id: string) => `plan:${id}:info`,
   // planStats: (id: string) => `plan:${id}:withStats`,
 
@@ -21,7 +21,6 @@ export const cacheKeys = {
   testPaperInfo: (id: string) => `testpaper:${id}:info`,
   testPaperStats: (id: string) => `testpaper:${id}:withStats`,
   testPaperAnswers: (id: string) => `testpaper:${id}:answers`,
-
 
   mcqByTestPaper: (id: string) => `mcq:testpaper:${id}`,
   noteByTopic: (id: string) => `note:topic:${id}`,

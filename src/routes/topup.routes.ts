@@ -9,7 +9,7 @@ const router = express.Router();
 // GET /api/topup-options - get all purchase options
 router.get(
   "/",
-  cacheMiddleware(() => cacheKeys.TopupOptionList()),
+  cacheMiddleware((req) => cacheKeys.TopupOptionList(req.query.active)),
   TopupController.getAll
 );
 
